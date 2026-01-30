@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-
+	"math/rand"
 	pb "verifyCode/api/verifyCode"
 )
 
@@ -15,17 +15,46 @@ func NewVerifyCodeService() *VerifyCodeService {
 }
 
 func (s *VerifyCodeService) CreateVerifyCode(ctx context.Context, req *pb.CreateVerifyCodeRequest) (*pb.CreateVerifyCodeReply, error) {
-    return &pb.CreateVerifyCodeReply{}, nil
+	return &pb.CreateVerifyCodeReply{}, nil
 }
 func (s *VerifyCodeService) UpdateVerifyCode(ctx context.Context, req *pb.UpdateVerifyCodeRequest) (*pb.UpdateVerifyCodeReply, error) {
-    return &pb.UpdateVerifyCodeReply{}, nil
+	return &pb.UpdateVerifyCodeReply{}, nil
 }
 func (s *VerifyCodeService) DeleteVerifyCode(ctx context.Context, req *pb.DeleteVerifyCodeRequest) (*pb.DeleteVerifyCodeReply, error) {
-    return &pb.DeleteVerifyCodeReply{}, nil
+	return &pb.DeleteVerifyCodeReply{}, nil
 }
 func (s *VerifyCodeService) GetVerifyCode(ctx context.Context, req *pb.GetVerifyCodeRequest) (*pb.GetVerifyCodeReply, error) {
-    return &pb.GetVerifyCodeReply{}, nil
+	return &pb.GetVerifyCodeReply{
+		Code: RandCode(int(req.Length), req.Type),
+	}, nil
 }
 func (s *VerifyCodeService) ListVerifyCode(ctx context.Context, req *pb.ListVerifyCodeRequest) (*pb.ListVerifyCodeReply, error) {
-    return &pb.ListVerifyCodeReply{}, nil
+	return &pb.ListVerifyCodeReply{}, nil
+}
+
+func RandCode(l int, t pb.TYPE) string {
+	var chars string
+	switch t {
+	case pb.TYPE_DIGIT:
+		chars = randCode("1234567890", l)
+	case pb.TYPE_LETTER:
+		chars = randCode("ABCDEFGHIJKLMNOPQRSTUVWXYZ", l)
+	case pb.TYPE_MIXED:
+		chars = randCode("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", l)
+	}
+	//909912 816218
+
+	return chars
+}
+
+func randCode(s string, l int) string {
+	// 传进来的字符串s 随机取len长度的字符串
+
+	randString := make([]byte, l)
+	lenS := len(s)
+	for i := 0; i < l; i++ {
+		randString[i] = s[rand.Intn(lenS)]
+	}
+
+	return string(randString)
 }

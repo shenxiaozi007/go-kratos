@@ -25,25 +25,25 @@ const (
 type TYPE int32
 
 const (
-	TYPE_DEFAULT         TYPE = 0
-	TYPE_REGISTER        TYPE = 1
-	TYPE_LOGIN           TYPE = 2
-	TYPE_CHANGE_PASSWORD TYPE = 3
+	TYPE_DEFAULT TYPE = 0
+	TYPE_DIGIT   TYPE = 1
+	TYPE_LETTER  TYPE = 2
+	TYPE_MIXED   TYPE = 3
 )
 
 // Enum value maps for TYPE.
 var (
 	TYPE_name = map[int32]string{
 		0: "DEFAULT",
-		1: "REGISTER",
-		2: "LOGIN",
-		3: "CHANGE_PASSWORD",
+		1: "DIGIT",
+		2: "LETTER",
+		3: "MIXED",
 	}
 	TYPE_value = map[string]int32{
-		"DEFAULT":         0,
-		"REGISTER":        1,
-		"LOGIN":           2,
-		"CHANGE_PASSWORD": 3,
+		"DEFAULT": 0,
+		"DIGIT":   1,
+		"LETTER":  2,
+		"MIXED":   3,
 	}
 )
 
@@ -478,12 +478,13 @@ const file_api_verifyCOde_verifyCode_proto_rawDesc = "" +
 	"\x12GetVerifyCodeReply\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\"\x17\n" +
 	"\x15ListVerifyCodeRequest\"\x15\n" +
-	"\x13ListVerifyCodeReply*A\n" +
+	"\x13ListVerifyCodeReply*5\n" +
 	"\x04TYPE\x12\v\n" +
-	"\aDEFAULT\x10\x00\x12\f\n" +
-	"\bREGISTER\x10\x01\x12\t\n" +
-	"\x05LOGIN\x10\x02\x12\x13\n" +
-	"\x0fCHANGE_PASSWORD\x10\x032\xf1\x03\n" +
+	"\aDEFAULT\x10\x00\x12\t\n" +
+	"\x05DIGIT\x10\x01\x12\n" +
+	"\n" +
+	"\x06LETTER\x10\x02\x12\t\n" +
+	"\x05MIXED\x10\x032\xf1\x03\n" +
 	"\n" +
 	"VerifyCode\x12b\n" +
 	"\x10CreateVerifyCode\x12'.api.verifyCode.CreateVerifyCodeRequest\x1a%.api.verifyCode.CreateVerifyCodeReply\x12b\n" +

@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"os"
-
 	"verifyCode/internal/conf"
 
 	"github.com/go-kratos/kratos/v2"

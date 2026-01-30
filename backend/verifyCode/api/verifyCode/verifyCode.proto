@@ -17,9 +17,9 @@ service VerifyCode {
 // 验证码类型
 enum TYPE {
 	DEFAULT = 0;
-	REGISTER = 1;
-	LOGIN = 2;
-	CHANGE_PASSWORD = 3;
+	DIGIT = 1;
+	LETTER = 2;
+	MIXED = 3;
 }
 message CreateVerifyCodeRequest {}
 message CreateVerifyCodeReply {}

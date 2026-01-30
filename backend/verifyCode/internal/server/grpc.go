@@ -16,7 +16,7 @@ func NewGRPCServer(
 	c *conf.Server,
 	greeter *service.GreeterService,
 
-//
+	//
 	verifyCodeService *service.VerifyCodeService,
 	logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
