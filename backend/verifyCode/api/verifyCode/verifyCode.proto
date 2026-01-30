@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package api.verifyCode;
+
+option go_package = "verifyCode/api/verifyCode;verifyCode";
+option java_multiple_files = true;
+option java_package = "api.verifyCode";
+
+service VerifyCode {
+	rpc CreateVerifyCode (CreateVerifyCodeRequest) returns (CreateVerifyCodeReply);
+	rpc UpdateVerifyCode (UpdateVerifyCodeRequest) returns (UpdateVerifyCodeReply);
+	rpc DeleteVerifyCode (DeleteVerifyCodeRequest) returns (DeleteVerifyCodeReply);
+	rpc GetVerifyCode (GetVerifyCodeRequest) returns (GetVerifyCodeReply);
+	rpc ListVerifyCode (ListVerifyCodeRequest) returns (ListVerifyCodeReply);
+}
+
+// 验证码类型
+enum TYPE {
+	DEFAULT = 0;
+	REGISTER = 1;
+	LOGIN = 2;
+	CHANGE_PASSWORD = 3;
+}
+message CreateVerifyCodeRequest {}
+message CreateVerifyCodeReply {}
+
+message UpdateVerifyCodeRequest {}
+message UpdateVerifyCodeReply {}
+
+message DeleteVerifyCodeRequest {}
+message DeleteVerifyCodeReply {}
+
+message GetVerifyCodeRequest {
+	// 验证码长度
+	uint32  length = 1;
+	// 验证码类型
+	TYPE type = 2;
+}
+
+message GetVerifyCodeReply {
+	//生成验证码
+	string code = 1;
+}
+
+message ListVerifyCodeRequest {}
+message ListVerifyCodeReply {}
