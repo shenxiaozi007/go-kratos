@@ -22,8 +22,9 @@ message GetCaptchaRequest {
 message GetCaptchaReply {
   int32 code = 1;
   string message = 2;
-  string data = 3;
+  string verify_code = 3;
   int32 verify_code_expire = 4;
+  int32 verify_code_life = 5;
 }
 
 

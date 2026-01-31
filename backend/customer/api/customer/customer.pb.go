@@ -70,8 +70,9 @@ type GetCaptchaReply struct {
 	state            protoimpl.MessageState `protogen:"open.v1"`
 	Code             int32                  `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message          string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data             string                 `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
+	VerifyCode       string                 `protobuf:"bytes,3,opt,name=verify_code,json=verifyCode,proto3" json:"verify_code,omitempty"`
 	VerifyCodeExpire int32                  `protobuf:"varint,4,opt,name=verify_code_expire,json=verifyCodeExpire,proto3" json:"verify_code_expire,omitempty"`
+	VerifyCodeLife   int32                  `protobuf:"varint,5,opt,name=verify_code_life,json=verifyCodeLife,proto3" json:"verify_code_life,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -120,9 +121,9 @@ func (x *GetCaptchaReply) GetMessage() string {
 	return ""
 }
 
-func (x *GetCaptchaReply) GetData() string {
+func (x *GetCaptchaReply) GetVerifyCode() string {
 	if x != nil {
-		return x.Data
+		return x.VerifyCode
 	}
 	return ""
 }
@@ -134,18 +135,27 @@ func (x *GetCaptchaReply) GetVerifyCodeExpire() int32 {
 	return 0
 }
 
+func (x *GetCaptchaReply) GetVerifyCodeLife() int32 {
+	if x != nil {
+		return x.VerifyCodeLife
+	}
+	return 0
+}
+
 var File_api_customer_customer_proto protoreflect.FileDescriptor
 
 const file_api_customer_customer_proto_rawDesc = "" +
 	"\n" +
 	"\x1bapi/customer/customer.proto\x12\fapi.customer\x1a\x1cgoogle/api/annotations.proto\"1\n" +
 	"\x11GetCaptchaRequest\x12\x1c\n" +
-	"\ttelephone\x18\x01 \x01(\tR\ttelephone\"\x81\x01\n" +
+	"\ttelephone\x18\x01 \x01(\tR\ttelephone\"\xb8\x01\n" +
 	"\x0fGetCaptchaReply\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\x12\x12\n" +
-	"\x04data\x18\x03 \x01(\tR\x04data\x12,\n" +
-	"\x12verify_code_expire\x18\x04 \x01(\x05R\x10verifyCodeExpire2\x82\x01\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\x12\x1f\n" +
+	"\vverify_code\x18\x03 \x01(\tR\n" +
+	"verifyCode\x12,\n" +
+	"\x12verify_code_expire\x18\x04 \x01(\x05R\x10verifyCodeExpire\x12(\n" +
+	"\x10verify_code_life\x18\x05 \x01(\x05R\x0everifyCodeLife2\x82\x01\n" +
 	"\bCustomer\x12v\n" +
 	"\n" +
 	"GetCaptcha\x12\x1f.api.customer.GetCaptchaRequest\x1a\x1d.api.customer.GetCaptchaReply\"(\x82\xd3\xe4\x93\x02\"\x12 /customer/getCaptcha/{telephone}B Z\x1ecustomer/api/customer;customerb\x06proto3"

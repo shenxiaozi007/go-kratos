@@ -41,9 +41,12 @@ components:
                     format: int32
                 message:
                     type: string
-                data:
+                verifyCode:
                     type: string
                 verifyCodeExpire:
+                    type: integer
+                    format: int32
+                verifyCodeLife:
                     type: integer
                     format: int32
         GoogleProtobufAny:
