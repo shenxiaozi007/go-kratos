@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/redis/go-redis/v9"
 )
 
 type CustomerService struct {
@@ -61,15 +62,42 @@ func (s *CustomerService) GetCaptcha(ctx context.Context, req *pb.GetCaptchaRequ
 
 	// 发送验证码请求
 	client := verifyCode.NewVerifyCodeClient(conn)
-	
+
 	reply, err := client.GetVerifyCode(context.Background(), &verifyCode.GetVerifyCodeRequest{
 		Length: 6,
 		Type:   1,
 	})
 
+	// redis 临时存储
+	// 连接redis
+	ctxRedis := context.Background()
+	rdb := redis.NewClient(&redis.Options{
+		Addr: "localhost:16379",
+	})
+
+	// 测试链接
+	errRedis := rdb.Ping(ctxRedis).Err()
+	if errRedis != nil {
+		return &pb.GetCaptchaReply{
+			Code:    1,
+			Message: "redis连接失败",
+		}, nil
+	}
+	const life = 60
+	//设置值
+	errRedis = rdb.Set(ctxRedis, "cvc:"+req.Telephone, reply.Code, time.Second*life).Err()
+
+	if errRedis != nil {
+		return &pb.GetCaptchaReply{
+			Code:    1,
+			Message: "redis设置失败",
+		}, nil
+	}
+	val, _ := rdb.Get(ctxRedis, "cvc:"+req.Telephone).Result()
+
 	return &pb.GetCaptchaReply{
 		Code:             0,
-		Message:          "验证码发送成功",
+		Message:          "验证码发送成功" + val,
 		VerifyCode:       reply.Code,
 		VerifyCodeExpire: int32(time.Now().Add(time.Minute * 5).Unix()),
 		VerifyCodeLife:   60,

@@ -1,0 +1,8 @@
+services:
+  redis:
+    container_name: kratos-redis
+    image: redis
+    ports:
+      - "16379:6379"
+    volumes:
+      - ./data/redis:/data
