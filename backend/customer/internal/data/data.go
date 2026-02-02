@@ -10,7 +10,7 @@ import (
 )
 
 // ProviderSet is data providers.
-var ProviderSet = wire.NewSet(NewData, NewGreeterRepo)
+var ProviderSet = wire.NewSet(NewData, NewGreeterRepo, NewCustomerData)
 
 // Data .
 type Data struct {
@@ -24,8 +24,7 @@ func NewData(c *conf.Data, logger log.Logger) (*Data, func(), error) {
 
 	ctxRedis := context.Background()
 	rdb := redis.NewClient(&redis.Options{
-		Addr:        c.Redis.Addr,
-		DialTimeout: 1,
+		Addr: c.Redis.Addr,
 	})
 	// 测试链接
 	errRedis := rdb.Ping(ctxRedis).Err()
