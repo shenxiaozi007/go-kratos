@@ -48,7 +48,7 @@ func (c *verifyCodeClient) GetVerifyCode(ctx context.Context, in *GetVerifyCodeR
 }
 
 // VerifyCodeServer is the server API for VerifyCode service.
-// All implementations must embed UnimplementedVerifyCodeServer
+// All implementations must embed UnimplementedVerifyCodeServerçççhttps://github.com/Windfarer/kratos-realworldhttps://github.com/Windfarer/kratos-realworldhttps://github.com/Windfarer/kratos-realworld
 // for forward compatibility.
 type VerifyCodeServer interface {
 	GetVerifyCode(context.Context, *GetVerifyCodeRequest) (*GetVerifyCodeReply, error)

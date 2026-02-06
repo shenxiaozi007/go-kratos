@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.19.3
-// source: helloworld/v1/greeter.proto
+// source: realworld/v1/realworld.proto
 
 package v1
 
@@ -160,12 +160,12 @@ func file_helloworld_v1_greeter_proto_rawDescGZIP() []byte {
 
 var file_helloworld_v1_greeter_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_helloworld_v1_greeter_proto_goTypes = []interface{}{
-	(*HelloRequest)(nil), // 0: helloworld.v1.HelloRequest
-	(*HelloReply)(nil),   // 1: helloworld.v1.HelloReply
+	(*HelloRequest)(nil), // 0: realworld.v1.HelloRequest
+	(*HelloReply)(nil),   // 1: realworld.v1.HelloReply
 }
 var file_helloworld_v1_greeter_proto_depIdxs = []int32{
-	0, // 0: helloworld.v1.Greeter.SayHello:input_type -> helloworld.v1.HelloRequest
-	1, // 1: helloworld.v1.Greeter.SayHello:output_type -> helloworld.v1.HelloReply
+	0, // 0: realworld.v1.Greeter.SayHello:input_type -> realworld.v1.HelloRequest
+	1, // 1: realworld.v1.Greeter.SayHello:output_type -> realworld.v1.HelloReply
 	1, // [1:2] is the sub-list for method output_type
 	0, // [0:1] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

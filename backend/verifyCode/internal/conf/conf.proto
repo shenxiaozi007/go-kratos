@@ -29,6 +29,10 @@ message Data {
   message Database {
     string driver = 1;
     string source = 2;
+    string username = 3;
+    string password = 4;
+    string host = 5;
+    int32 port = 6;
   }
   message Redis {
     string network = 1;
