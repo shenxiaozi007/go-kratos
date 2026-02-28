@@ -72,8 +72,8 @@ func RegisterRealworldHTTPServer(s *http.Server, srv RealworldHTTPServer) {
 	r.DELETE("/api/profiles/{username}/follow", _Realworld_UnfollowUser0_HTTP_Handler(srv))
 	r.GET("/api/articles", _Realworld_ListArticles0_HTTP_Handler(srv))
 	r.GET("/api/articles/feed", _Realworld_FeedArticles0_HTTP_Handler(srv))
-	r.GET("/api/articles/{slug}", _Realworld_GetArticle0_HTTP_Handler(srv))
-	r.POST("/api/articles", _Realworld_CreateArticle0_HTTP_Handler(srv))
+	r.GET("/api/articles/{slug}", _Realworld_GetArticle1_HTTP_Handler(srv))
+	r.POST("/api/articles", _Realworld_CreateArticle1_HTTP_Handler(srv))
 	r.PUT("/api/articles/{slug}", _Realworld_UpdateArticle0_HTTP_Handler(srv))
 	r.DELETE("/api/articles/{slug}", _Realworld_DeleteArticle0_HTTP_Handler(srv))
 	r.POST("/api/articles/{slug}/comments", _Realworld_AddComment0_HTTP_Handler(srv))
@@ -276,7 +276,7 @@ func _Realworld_FeedArticles0_HTTP_Handler(srv RealworldHTTPServer) func(ctx htt
 	}
 }
 
-func _Realworld_GetArticle0_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.Context) error {
+func _Realworld_GetArticle1_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetArticleRequest
 		if err := ctx.BindQuery(&in); err != nil {
@@ -298,7 +298,7 @@ func _Realworld_GetArticle0_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.
 	}
 }
 
-func _Realworld_CreateArticle0_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.Context) error {
+func _Realworld_CreateArticle1_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in CreateArticleRequest
 		if err := ctx.Bind(&in); err != nil {

@@ -5,6 +5,873 @@ openapi: 3.0.3
 info:
     title: ""
     version: 0.0.1
-paths: {}
+paths:
+    /api/add-todo:
+        post:
+            tags:
+                - TodoService
+            description: |-
+                添加新的待办事项
+
+                 HTTP:
+                   POST /api/add-todo
+                   Body:
+                   {
+                     "value": "待办内容",
+                     "isCompleted": false
+                   }
+            operationId: TodoService_AddTodo
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/todo.v1.AddTodoRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/todo.v1.TodoReply'
+    /api/article:
+        post:
+            tags:
+                - Article
+            operationId: Article_CreateArticle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.blog.v1.CreateArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.blog.v1.ArticleReply'
+    /api/article//publish:
+        post:
+            tags:
+                - Article
+            operationId: Article_PublishArticle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.blog.v1.PublishArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.blog.v1.EmptyReply'
+    /api/article/{id}:
+        get:
+            tags:
+                - Article
+            operationId: Article_GetArticle
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.blog.v1.ArticleReply'
+    /api/articles:
+        get:
+            tags:
+                - Realworld
+            operationId: Realworld_ListArticles
+            parameters:
+                - name: tag
+                  in: query
+                  schema:
+                    type: string
+                - name: author
+                  in: query
+                  schema:
+                    type: string
+                - name: favorited
+                  in: query
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  schema:
+                    type: string
+                - name: offset
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.MultipleArticlesReply'
+        post:
+            tags:
+                - Realworld
+            operationId: Realworld_CreateArticle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.CreateArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleArticleReply'
+    /api/articles/feed:
+        get:
+            tags:
+                - Realworld
+            operationId: Realworld_FeedArticles
+            parameters:
+                - name: limit
+                  in: query
+                  schema:
+                    type: string
+                - name: offset
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.MultipleArticlesReply'
+    /api/articles/{slug}:
+        get:
+            tags:
+                - Realworld
+            operationId: Realworld_GetArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleArticleReply'
+        put:
+            tags:
+                - Realworld
+            operationId: Realworld_UpdateArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.UpdateArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleArticleReply'
+        delete:
+            tags:
+                - Realworld
+            operationId: Realworld_DeleteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleArticleReply'
+    /api/articles/{slug}/comments:
+        get:
+            tags:
+                - Realworld
+            operationId: Realworld_GetComments
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: comment.body
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.MultipleCommentsReply'
+        post:
+            tags:
+                - Realworld
+            operationId: Realworld_AddComment
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.AddCommentRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleCommentReply'
+    /api/articles/{slug}/comments/{id}:
+        delete:
+            tags:
+                - Realworld
+            operationId: Realworld_DeleteComment
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleCommentReply'
+    /api/articles/{slug}/favorite:
+        post:
+            tags:
+                - Realworld
+            operationId: Realworld_FavoriteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.FavoriteArticleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleArticleReply'
+        delete:
+            tags:
+                - Realworld
+            operationId: Realworld_UnfavoriteArticle
+            parameters:
+                - name: slug
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.SingleArticleReply'
+    /api/del-todo/{id}:
+        post:
+            tags:
+                - TodoService
+            description: |-
+                删除待办事项
+
+                 HTTP:
+                   POST /api/del-todo/{id}
+            operationId: TodoService_DeleteTodo
+            parameters:
+                - name: id
+                  in: path
+                  description: 待办事项 ID。
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/todo.v1.DeleteTodoRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/todo.v1.DeleteTodoReply'
+    /api/get-todo:
+        get:
+            tags:
+                - TodoService
+            description: |-
+                查询所有待办事项
+
+                 HTTP:
+                   GET /api/get-todo
+            operationId: TodoService_GetTodoList
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/todo.v1.GetTodoListReply'
+    /api/profiles/{username}:
+        get:
+            tags:
+                - Realworld
+            operationId: Realworld_GetProfile
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.ProfileReply'
+    /api/profiles/{username}/follow:
+        post:
+            tags:
+                - Realworld
+            operationId: Realworld_FollowUser
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.FollowUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.ProfileReply'
+        delete:
+            tags:
+                - Realworld
+            operationId: Realworld_UnfollowUser
+            parameters:
+                - name: username
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.ProfileReply'
+    /api/tags:
+        get:
+            tags:
+                - Realworld
+            operationId: Realworld_GetTags
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.TagListReply'
+    /api/update-todo/{id}:
+        post:
+            tags:
+                - TodoService
+            description: |-
+                更新待办事项状态（将 isCompleted 取反）
+
+                 HTTP:
+                   POST /api/update-todo/{id}
+            operationId: TodoService_UpdateTodo
+            parameters:
+                - name: id
+                  in: path
+                  description: 待办事项 ID。
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/todo.v1.UpdateTodoRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/todo.v1.TodoReply'
+    /api/user:
+        get:
+            tags:
+                - Realworld
+            operationId: Realworld_GetCurrentUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserReply'
+        put:
+            tags:
+                - Realworld
+            operationId: Realworld_UpdateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserReply'
+    /api/users:
+        post:
+            tags:
+                - Realworld
+            operationId: Realworld_Register
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.RegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserReply'
+    /api/users/login:
+        post:
+            tags:
+                - Realworld
+            operationId: Realworld_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/realworld.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/realworld.v1.UserReply'
 components:
-    schemas: {}
+    schemas:
+        api.blog.v1.ArticleReply:
+            type: object
+            properties:
+                title:
+                    type: string
+                content:
+                    type: string
+                status:
+                    type: string
+                categoryId:
+                    type: string
+                viewCount:
+                    type: string
+                likeCount:
+                    type: string
+            description: |-
+                title:      title,
+                		content:    content,
+                		status:     Draft,
+                		categoryID: categoryID,
+                		viewCount:  0,
+                		likeCount:  0,
+        api.blog.v1.CreateArticleRequest:
+            type: object
+            properties:
+                title:
+                    type: string
+                content:
+                    type: string
+                categoryId:
+                    type: string
+            description: title, content string, categoryID
+        api.blog.v1.EmptyReply:
+            type: object
+            properties: {}
+        api.blog.v1.ListArticleReply:
+            type: object
+            properties:
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.blog.v1.ArticleReply'
+        api.blog.v1.PublishArticleRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+        realworld.v1.AddCommentRequest:
+            type: object
+            properties:
+                comment:
+                    $ref: '#/components/schemas/realworld.v1.AddCommentRequest_Comment'
+                slug:
+                    type: string
+        realworld.v1.AddCommentRequest_Comment:
+            type: object
+            properties:
+                body:
+                    type: string
+        realworld.v1.Article:
+            type: object
+            properties:
+                slug:
+                    type: string
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+                favorited:
+                    type: boolean
+                favoritesCount:
+                    type: integer
+                    format: uint32
+                author:
+                    $ref: '#/components/schemas/realworld.v1.Profile'
+        realworld.v1.Comment:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+                body:
+                    type: string
+                author:
+                    $ref: '#/components/schemas/realworld.v1.Profile'
+        realworld.v1.CreateArticleRequest:
+            type: object
+            properties:
+                article:
+                    $ref: '#/components/schemas/realworld.v1.CreateArticleRequest_Article'
+        realworld.v1.CreateArticleRequest_Article:
+            type: object
+            properties:
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+        realworld.v1.FavoriteArticleRequest:
+            type: object
+            properties:
+                slug:
+                    type: string
+        realworld.v1.FollowUserRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+        realworld.v1.LoginRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.LoginRequest_User'
+        realworld.v1.LoginRequest_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+        realworld.v1.MultipleArticlesReply:
+            type: object
+            properties:
+                articles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/realworld.v1.Article'
+                articlesCount:
+                    type: integer
+                    format: uint32
+        realworld.v1.MultipleCommentsReply:
+            type: object
+            properties:
+                comments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/realworld.v1.Comment'
+        realworld.v1.Profile:
+            type: object
+            properties:
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+                following:
+                    type: boolean
+        realworld.v1.ProfileReply:
+            type: object
+            properties:
+                profile:
+                    $ref: '#/components/schemas/realworld.v1.Profile'
+        realworld.v1.RegisterRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.RegisterRequest_User'
+        realworld.v1.RegisterRequest_User:
+            type: object
+            properties:
+                username:
+                    type: string
+                email:
+                    type: string
+                password:
+                    type: string
+        realworld.v1.SingleArticleReply:
+            type: object
+            properties:
+                article:
+                    $ref: '#/components/schemas/realworld.v1.Article'
+        realworld.v1.SingleCommentReply:
+            type: object
+            properties:
+                comment:
+                    $ref: '#/components/schemas/realworld.v1.Comment'
+        realworld.v1.TagListReply:
+            type: object
+            properties:
+                tags:
+                    type: array
+                    items:
+                        type: string
+        realworld.v1.UpdateArticleRequest:
+            type: object
+            properties:
+                article:
+                    $ref: '#/components/schemas/realworld.v1.UpdateArticleRequest_Article'
+                slug:
+                    type: string
+        realworld.v1.UpdateArticleRequest_Article:
+            type: object
+            properties:
+                title:
+                    type: string
+                description:
+                    type: string
+                body:
+                    type: string
+                tagList:
+                    type: array
+                    items:
+                        type: string
+        realworld.v1.UpdateUserRequest:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.UpdateUserRequest_User'
+        realworld.v1.UpdateUserRequest_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                password:
+                    type: string
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+        realworld.v1.UserReply:
+            type: object
+            properties:
+                user:
+                    $ref: '#/components/schemas/realworld.v1.UserReply_User'
+        realworld.v1.UserReply_User:
+            type: object
+            properties:
+                email:
+                    type: string
+                token:
+                    type: string
+                username:
+                    type: string
+                bio:
+                    type: string
+                image:
+                    type: string
+        todo.v1.AddTodoRequest:
+            type: object
+            properties:
+                value:
+                    type: string
+                    description: 待办事项内容。
+                isCompleted:
+                    type: boolean
+                    description: 是否完成，默认为 false。
+            description: AddTodoRequest 是“添加新的待办事项”的请求体结构。
+        todo.v1.DeleteTodoReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                    description: 删除是否成功。
+            description: DeleteTodoReply 表示删除操作的结果状态。
+        todo.v1.DeleteTodoRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: 待办事项 ID。
+            description: DeleteTodoRequest 用于根据 id 删除待办事项。
+        todo.v1.GetTodoListReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/todo.v1.Todo'
+            description: |-
+                GetTodoListReply 是“查询所有待办事项”的返回值结构。
+                 为了兼容 JSON 格式，这里返回一个对象，其中 items 字段为数组：
+                 {
+                   "items": [
+                     { "id": 1, "value": "示例", "isCompleted": false },
+                     ...
+                   ]
+                 }
+        todo.v1.Todo:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: 唯一标识，对应数据库中的主键 ID。
+                value:
+                    type: string
+                    description: 待办事项的具体内容。
+                isCompleted:
+                    type: boolean
+                    description: 是否完成。
+            description: Todo 是待办事项的数据结构定义。
+        todo.v1.TodoReply:
+            type: object
+            properties:
+                todo:
+                    $ref: '#/components/schemas/todo.v1.Todo'
+            description: TodoReply 是返回单个待办事项的通用结构。
+        todo.v1.UpdateTodoRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                    description: 待办事项 ID。
+            description: UpdateTodoRequest 用于根据 id 更新待办事项状态（取反）。
+tags:
+    - name: Article
+    - name: Realworld
+    - name: TodoService
+      description: Todo 服务定义，包含 4 个 RPC 方法，分别对应 4 个 RESTful API。

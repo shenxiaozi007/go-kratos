@@ -1,0 +1,117 @@
+syntax = "proto3";
+
+// Todo 模块的 proto 定义，采用 Kratos 官方推荐的 proto 驱动方式，
+// 通过 google.api.http 注解将 gRPC 方法映射为 RESTful HTTP 接口。
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+// go_package 指定生成的 Go 代码所在的包路径以及包名。
+option go_package = "realworld/api/todo/v1;v1";
+
+// Todo 服务定义，包含 4 个 RPC 方法，分别对应 4 个 RESTful API。
+service TodoService {
+  // 查询所有待办事项
+  //
+  // HTTP:
+  //   GET /api/get-todo
+  rpc GetTodoList(google.protobuf.Empty) returns (GetTodoListReply) {
+    option (google.api.http) = {
+      get: "/api/get-todo";
+    };
+  }
+
+  // 添加新的待办事项
+  //
+  // HTTP:
+  //   POST /api/add-todo
+  //   Body:
+  //   {
+  //     "value": "待办内容",
+  //     "isCompleted": false
+  //   }
+  rpc AddTodo(AddTodoRequest) returns (TodoReply) {
+    option (google.api.http) = {
+      post: "/api/add-todo";
+      body: "*";
+    };
+  }
+
+  // 更新待办事项状态（将 isCompleted 取反）
+  //
+  // HTTP:
+  //   POST /api/update-todo/{id}
+  rpc UpdateTodo(UpdateTodoRequest) returns (TodoReply) {
+    option (google.api.http) = {
+      post: "/api/update-todo/{id}";
+      body: "*";
+    };
+  }
+
+  // 删除待办事项
+  //
+  // HTTP:
+  //   POST /api/del-todo/{id}
+  rpc DeleteTodo(DeleteTodoRequest) returns (DeleteTodoReply) {
+    option (google.api.http) = {
+      post: "/api/del-todo/{id}";
+      body: "*";
+    };
+  }
+}
+
+// Todo 是待办事项的数据结构定义。
+message Todo {
+  // 唯一标识，对应数据库中的主键 ID。
+  uint64 id = 1;
+  // 待办事项的具体内容。
+  string value = 2;
+  // 是否完成。
+  bool isCompleted = 3;
+}
+
+// GetTodoListReply 是“查询所有待办事项”的返回值结构。
+// 为了兼容 JSON 格式，这里返回一个对象，其中 items 字段为数组：
+// {
+//   "items": [
+//     { "id": 1, "value": "示例", "isCompleted": false },
+//     ...
+//   ]
+// }
+message GetTodoListReply {
+  repeated Todo items = 1;
+}
+
+// AddTodoRequest 是“添加新的待办事项”的请求体结构。
+message AddTodoRequest {
+  // 待办事项内容。
+  string value = 1;
+  // 是否完成，默认为 false。
+  bool isCompleted = 2;
+}
+
+// TodoReply 是返回单个待办事项的通用结构。
+message TodoReply {
+  Todo todo = 1;
+}
+
+// UpdateTodoRequest 用于根据 id 更新待办事项状态（取反）。
+message UpdateTodoRequest {
+  // 待办事项 ID。
+  uint64 id = 1;
+}
+
+// DeleteTodoRequest 用于根据 id 删除待办事项。
+message DeleteTodoRequest {
+  // 待办事项 ID。
+  uint64 id = 1;
+}
+
+// DeleteTodoReply 表示删除操作的结果状态。
+message DeleteTodoReply {
+  // 删除是否成功。
+  bool success = 1;
+}
+

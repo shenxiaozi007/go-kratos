@@ -13,7 +13,7 @@ data:
     password: hxc
     host: 127.0.0.1
     port: 13306
-    database: kratos
+    database: kratos-blog
   redis:
     addr: 127.0.0.1:16379
     read_timeout: 0.2s

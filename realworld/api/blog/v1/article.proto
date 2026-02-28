@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package api.blog.v1;
+
+
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/blog/v1;v1";
+
+service Article {
+	rpc CreateArticle (CreateArticleRequest) returns (ArticleReply) {
+		option (google.api.http) = {
+			post: "/api/article"
+			body: "*"
+		};
+	}
+
+	rpc GetArticle (GetArticleRequest) returns (ArticleReply) {
+		option (google.api.http) = {
+			get: "/api/article/{id}"
+		};
+	};
+	rpc ListArticle (ListArticleRequest) returns (ListArticleReply) {
+		option (google.api.http) = {
+			get: "/api/articles"
+		};
+	};
+	rpc publishArticle (PublishArticleRequest) returns (EmptyReply) {
+		option (google.api.http) = {
+			post: "/api/article//publish"
+			body: "*"
+		};
+	};
+}
+// title, content string, categoryID
+message CreateArticleRequest {
+	string title = 1;
+	string content = 2;
+	int64 category_id = 3;
+}
+// 		title:      title,
+//		content:    content,
+//		status:     Draft,
+//		categoryID: categoryID,
+//		viewCount:  0,
+//		likeCount:  0,
+message ArticleReply {
+	string title = 1;
+	string content = 2;
+	int64 status = 3;
+	int64 category_id = 4;
+	int64 view_count = 5;
+	int64 like_count = 6;
+}
+
+message GetArticleRequest {
+	int64 id = 1;
+}
+
+//  offset, limit int
+message ListArticleRequest {
+	int64 offset = 1;
+	int64 limit = 2;
+}
+message ListArticleReply {
+	repeated ArticleReply list = 1;
+}
+
+message PublishArticleRequest {
+	int64 id = 1;
+}
+message EmptyReply {
+
+}
