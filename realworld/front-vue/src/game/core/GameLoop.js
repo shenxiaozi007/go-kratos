@@ -29,6 +29,22 @@ const TILE_WALL_UNBREAKABLE = 2
 const TILE_WATER = 3
 const TILE_GRASS = 4
 
+// 后端可能返回数字(0-4)或字符串枚举名，统一转为数字
+const TILE_TYPE_BY_NAME = {
+  TILE_EMPTY: 0,
+  TILE_WALL_BREAKABLE: 1,
+  TILE_WALL_UNBREAKABLE: 2,
+  TILE_WATER: 3,
+  TILE_GRASS: 4
+}
+function parseTileType(v) {
+  if (v == null) return TILE_EMPTY
+  const n = Number(v)
+  if (!Number.isNaN(n) && n >= 0 && n <= 4) return n
+  const s = String(v).toUpperCase()
+  return TILE_TYPE_BY_NAME[s] ?? TILE_EMPTY
+}
+
 function parseTankConfig(tankConfig) {
   if (!tankConfig || !tankConfig.player) {
     return {
@@ -70,7 +86,7 @@ function buildMapGrid(map) {
   for (const t of tiles) {
     const x = Number(t.x ?? t.X ?? 0)
     const y = Number(t.y ?? t.Y ?? 0)
-    const type = t.type != null ? Number(t.type) : (t.Type != null ? Number(t.Type) : TILE_EMPTY)
+    const type = parseTileType(t.type ?? t.Type)
     const key = `${x},${y}`
     tileByKey.set(key, type)
     if (type === TILE_WALL_BREAKABLE) breakableKeys.add(key)

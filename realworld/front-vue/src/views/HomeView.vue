@@ -39,8 +39,8 @@
           :key="m.id"
           type="button"
           class="btn"
-          :class="{ 'btn-primary': mapId === m.id }"
-          @click="mapId = m.id"
+          :class="{ 'btn-primary': Number(m.id) === Number(mapId) }"
+          @click="mapId = Number(m.id) || 1"
         >
           {{ m.name }}
         </button>
@@ -82,8 +82,9 @@ export default {
       try {
         const res = await listMaps()
         this.maps = res.maps || []
-        if (this.maps.length > 0 && !this.maps.find(m => m.id === this.mapId)) {
-          this.mapId = this.maps[0].id
+        // 后端 id 可能为字符串 "1"/"2"/"3"，统一按数值比较
+        if (this.maps.length > 0 && !this.maps.find(m => Number(m.id) === Number(this.mapId))) {
+          this.mapId = Number(this.maps[0].id) || 1
         }
       } catch (_) {
         this.maps = []
@@ -100,7 +101,7 @@ export default {
         const localPlayerCount = this.mode === 'single' ? 1 : 2
         const res = await createSession({
           mode,
-          map_id: this.mapId,
+          map_id: Number(this.mapId) || 1,
           local_player_count: localPlayerCount,
           difficulty: this.difficulty
         })
@@ -109,12 +110,13 @@ export default {
           this.error = '未获取到对局 ID'
           return
         }
+        const mapId = Number(this.mapId) || 1
         this.$router.push({
           name: 'game',
           query: {
             sessionId,
             mode: String(mode),
-            mapId: String(this.mapId),
+            mapId: String(mapId),
             difficulty: String(this.difficulty)
           }
         })
