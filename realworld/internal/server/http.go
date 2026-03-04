@@ -3,7 +3,9 @@ package server
 import (
 	"context"
 	v2 "realworld/api/blog/v1"
+	gamev1 "realworld/api/game/v1"
 	v1 "realworld/api/realworld/v1"
+	statsv1 "realworld/api/stats/v1"
 	todov1 "realworld/api/todo/v1"
 	"realworld/internal/conf"
 	"realworld/internal/service"
@@ -24,6 +26,8 @@ func NewHTTPServer(
 	logger log.Logger,
 	articleService *service.ArticleService,
 	todoService *service.TodoService,
+	gameService *service.GameService,
+	statsService *service.StatsService,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -57,6 +61,10 @@ func NewHTTPServer(
 	// 完全遵循 Kratos 的 proto 驱动方式。
 	// 具体路由定义见 api/todo/v1/todo.proto 中的 google.api.http 注解。
 	todov1.RegisterTodoServiceHTTPServer(srv, todoService)
+
+	// 注册 GameService 的 HTTP 路由，具体映射见 api/game/v1/game.proto 中的注解。
+	gamev1.RegisterGameServiceHTTPServer(srv, gameService)
+	statsv1.RegisterStatsServiceHTTPServer(srv, statsService)
 
 	return srv
 }

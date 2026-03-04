@@ -539,6 +539,254 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/realworld.v1.UserReply'
+    /api/v1/auth/login:
+        post:
+            tags:
+                - AuthService
+            description: |-
+                登录并返回访问令牌
+
+                 HTTP:
+                   POST /api/v1/auth/login
+                   Body:
+                   {
+                     "username": "foo",
+                     "password": "bar"
+                   }
+            operationId: AuthService_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.LoginReply'
+    /api/v1/auth/profile:
+        get:
+            tags:
+                - AuthService
+            description: |-
+                获取当前登录用户信息
+
+                 HTTP:
+                   GET /api/v1/auth/profile
+                   Header:
+                     Authorization: Bearer <token>
+            operationId: AuthService_GetProfile
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.GetProfileReply'
+    /api/v1/auth/register:
+        post:
+            tags:
+                - AuthService
+            description: |-
+                注册新用户
+
+                 HTTP:
+                   POST /api/v1/auth/register
+                   Body:
+                   {
+                     "username": "foo",
+                     "password": "bar"
+                   }
+            operationId: AuthService_Register
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/auth.v1.RegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/auth.v1.RegisterReply'
+    /api/v1/game/config/tank:
+        get:
+            tags:
+                - GameService
+            description: |-
+                获取坦克与子弹的基础属性配置。
+
+                 HTTP:
+                   GET /api/v1/game/config/tank
+            operationId: GameService_GetTankConfig
+            parameters:
+                - name: difficulty
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/game.v1.GetTankConfigReply'
+    /api/v1/game/maps:
+        get:
+            tags:
+                - GameService
+            description: |-
+                获取所有可选地图列表。
+
+                 HTTP:
+                   GET /api/v1/game/maps
+            operationId: GameService_ListMaps
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/game.v1.ListMapsReply'
+    /api/v1/game/maps/{id}:
+        get:
+            tags:
+                - GameService
+            description: |-
+                获取单张地图详细配置。
+
+                 HTTP:
+                   GET /api/v1/game/maps/{id}
+            operationId: GameService_GetMap
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/game.v1.GetMapReply'
+    /api/v1/game/session:
+        post:
+            tags:
+                - GameService
+            description: |-
+                创建对局。
+
+                 HTTP:
+                   POST /api/v1/game/session
+                   Body:
+                   {
+                     "mode": 1,
+                     "map_id": 1,
+                     "local_player_count": 2
+                   }
+            operationId: GameService_CreateSession
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/game.v1.CreateSessionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/game.v1.CreateSessionReply'
+    /api/v1/game/session/{session_id}/finish:
+        patch:
+            tags:
+                - GameService
+            description: |-
+                上报对局结束结果。
+
+                 HTTP:
+                   PATCH /api/v1/game/session/{id}/finish
+                   Body: FinishSessionRequest（除 session_id 外字段）
+            operationId: GameService_FinishSession
+            parameters:
+                - name: session_id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/game.v1.FinishSessionRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/game.v1.FinishSessionReply'
+    /api/v1/stats/leaderboard:
+        get:
+            tags:
+                - StatsService
+            description: |-
+                查询排行榜。
+
+                 HTTP:
+                   GET /api/v1/stats/leaderboard?limit=50
+            operationId: StatsService_GetLeaderboard
+            parameters:
+                - name: limit
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/stats.v1.GetLeaderboardReply'
+    /api/v1/stats/matches:
+        get:
+            tags:
+                - StatsService
+            description: |-
+                查询个人历史对局记录（基于当前登录用户）。
+
+                 HTTP:
+                   GET /api/v1/stats/matches?page=1&page_size=20
+            operationId: StatsService_ListMatches
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/stats.v1.ListMatchesReply'
 components:
     schemas:
         api.blog.v1.ArticleReply:
@@ -588,6 +836,195 @@ components:
             properties:
                 id:
                     type: string
+        auth.v1.GetProfileReply:
+            type: object
+            properties:
+                userId:
+                    type: string
+                username:
+                    type: string
+                totalMatches:
+                    type: integer
+                    format: int32
+                totalWins:
+                    type: integer
+                    format: int32
+                winRate:
+                    type: number
+                    format: float
+        auth.v1.LoginReply:
+            type: object
+            properties:
+                accessToken:
+                    type: string
+                expiresIn:
+                    type: string
+        auth.v1.LoginRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+        auth.v1.RegisterReply:
+            type: object
+            properties:
+                userId:
+                    type: string
+                username:
+                    type: string
+        auth.v1.RegisterRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+        game.v1.CreateSessionReply:
+            type: object
+            properties:
+                session_id:
+                    type: string
+            description: 创建对局响应。
+        game.v1.CreateSessionRequest:
+            type: object
+            properties:
+                mode:
+                    type: integer
+                    format: enum
+                map_id:
+                    type: string
+                local_player_count:
+                    type: integer
+                    format: int32
+                difficulty:
+                    type: integer
+                    format: int32
+            description: 难度：1=简单 2=普通 3=困难（影响敌我移速、子弹速度等）
+        game.v1.FinishSessionReply:
+            type: object
+            properties:
+                session_id:
+                    type: string
+                status:
+                    type: integer
+                    format: enum
+            description: 结束对局响应。
+        game.v1.FinishSessionRequest:
+            type: object
+            properties:
+                session_id:
+                    type: string
+                mode:
+                    type: integer
+                    format: enum
+                map_id:
+                    type: string
+                is_win:
+                    type: boolean
+                player1_kills:
+                    type: integer
+                    format: int32
+                player2_kills:
+                    type: integer
+                    format: int32
+                enemy_kills:
+                    type: integer
+                    format: int32
+                duration_seconds:
+                    type: integer
+                    format: int32
+            description: 结束对局上报请求。
+        game.v1.GetMapReply:
+            type: object
+            properties:
+                map:
+                    $ref: '#/components/schemas/game.v1.MapDetail'
+        game.v1.GetTankConfigReply:
+            type: object
+            properties:
+                config:
+                    $ref: '#/components/schemas/game.v1.TankConfigSet'
+        game.v1.ListMapsReply:
+            type: object
+            properties:
+                maps:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/game.v1.MapBasicInfo'
+        game.v1.MapBasicInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                width:
+                    type: integer
+                    format: int32
+                height:
+                    type: integer
+                    format: int32
+                thumbnail_url:
+                    type: string
+            description: 地图基础信息（列表用）。
+        game.v1.MapDetail:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                width:
+                    type: integer
+                    format: int32
+                height:
+                    type: integer
+                    format: int32
+                tiles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/game.v1.MapTile'
+            description: 地图详情配置。
+        game.v1.MapTile:
+            type: object
+            properties:
+                x:
+                    type: integer
+                    format: int32
+                y:
+                    type: integer
+                    format: int32
+                type:
+                    type: integer
+                    format: enum
+            description: 单个地图格子。
+        game.v1.TankConfig:
+            type: object
+            properties:
+                hp:
+                    type: integer
+                    format: int32
+                move_speed:
+                    type: number
+                    format: float
+                bullet_speed:
+                    type: number
+                    format: float
+                fire_cooldown:
+                    type: number
+                    format: float
+            description: 坦克基础属性。
+        game.v1.TankConfigSet:
+            type: object
+            properties:
+                player:
+                    $ref: '#/components/schemas/game.v1.TankConfig'
+                enemy:
+                    $ref: '#/components/schemas/game.v1.TankConfig'
+            description: 玩家/敌方坦克属性集合。
         realworld.v1.AddCommentRequest:
             type: object
             properties:
@@ -804,6 +1241,74 @@ components:
                     type: string
                 image:
                     type: string
+        stats.v1.GetLeaderboardReply:
+            type: object
+            properties:
+                entries:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/stats.v1.LeaderboardEntry'
+        stats.v1.LeaderboardEntry:
+            type: object
+            properties:
+                userId:
+                    type: string
+                username:
+                    type: string
+                totalMatches:
+                    type: integer
+                    format: int32
+                totalWins:
+                    type: integer
+                    format: int32
+                winRate:
+                    type: number
+                    format: float
+            description: 排行榜条目。
+        stats.v1.ListMatchesReply:
+            type: object
+            properties:
+                records:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/stats.v1.MatchRecord'
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+                total:
+                    type: string
+        stats.v1.MatchRecord:
+            type: object
+            properties:
+                sessionId:
+                    type: string
+                userId:
+                    type: string
+                mode:
+                    type: integer
+                    format: enum
+                mapId:
+                    type: string
+                isWin:
+                    type: boolean
+                player1Kills:
+                    type: integer
+                    format: int32
+                player2Kills:
+                    type: integer
+                    format: int32
+                enemyKills:
+                    type: integer
+                    format: int32
+                durationSeconds:
+                    type: integer
+                    format: int32
+                createdAt:
+                    type: string
+            description: 单场对局记录。
         todo.v1.AddTodoRequest:
             type: object
             properties:
@@ -872,6 +1377,12 @@ components:
             description: UpdateTodoRequest 用于根据 id 更新待办事项状态（取反）。
 tags:
     - name: Article
+    - name: AuthService
+      description: 简单账号体系（可选）：注册、登录、获取当前用户信息。
+    - name: GameService
+      description: 游戏配置与对局管理相关接口。
     - name: Realworld
+    - name: StatsService
+      description: 战绩查询与排行榜接口。
     - name: TodoService
       description: Todo 服务定义，包含 4 个 RPC 方法，分别对应 4 个 RESTful API。

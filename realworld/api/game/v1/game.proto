@@ -1,0 +1,188 @@
+syntax = "proto3";
+
+package game.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/game/v1;v1";
+
+// 游戏模式：单人 vs AI、本地双人对战。
+enum GameMode {
+  GAME_MODE_UNKNOWN = 0;
+  GAME_MODE_SINGLE = 1;
+  GAME_MODE_LOCAL_PVP = 2;
+}
+
+// 地图基础信息（列表用）。
+message MapBasicInfo {
+  int64 id = 1;
+  string name = 2;
+  string description = 3;
+  int32 width = 4;
+  int32 height = 5;
+  string thumbnail_url = 6 [json_name = "thumbnail_url"];
+}
+
+// 地图地块类型。
+enum TileType {
+  TILE_EMPTY = 0;
+  TILE_WALL_BREAKABLE = 1;
+  TILE_WALL_UNBREAKABLE = 2;
+  TILE_WATER = 3;
+  TILE_GRASS = 4;
+}
+
+// 单个地图格子。
+message MapTile {
+  int32 x = 1;
+  int32 y = 2;
+  TileType type = 3;
+}
+
+// 地图详情配置。
+message MapDetail {
+  int64 id = 1;
+  string name = 2;
+  int32 width = 3;
+  int32 height = 4;
+  repeated MapTile tiles = 5;
+}
+
+// 坦克基础属性。
+message TankConfig {
+  int32 hp = 1;
+  float move_speed = 2 [json_name = "move_speed"];
+  float bullet_speed = 3 [json_name = "bullet_speed"];
+  float fire_cooldown = 4 [json_name = "fire_cooldown"];
+}
+
+// 玩家/敌方坦克属性集合。
+message TankConfigSet {
+  TankConfig player = 1;
+  TankConfig enemy = 2;
+}
+
+// 对局状态枚举。
+enum SessionStatus {
+  SESSION_STATUS_UNKNOWN = 0;
+  SESSION_STATUS_CREATED = 1;
+  SESSION_STATUS_RUNNING = 2;
+  SESSION_STATUS_FINISHED = 3;
+}
+
+// 难度：1=简单 2=普通 3=困难（影响敌我移速、子弹速度等）
+message CreateSessionRequest {
+  GameMode mode = 1;
+  int64 map_id = 2 [json_name = "map_id"];
+  int32 local_player_count = 3 [json_name = "local_player_count"]; // 1 or 2
+  int32 difficulty = 4; // 1=easy, 2=normal, 3=hard，默认 2
+}
+
+// 创建对局响应。
+message CreateSessionReply {
+  string session_id = 1 [json_name = "session_id"];
+}
+
+// 结束对局上报请求。
+message FinishSessionRequest {
+  string session_id = 1 [json_name = "session_id"];
+  GameMode mode = 2;
+  int64 map_id = 3 [json_name = "map_id"];
+  bool is_win = 4 [json_name = "is_win"];
+  int32 player1_kills = 5 [json_name = "player1_kills"];
+  int32 player2_kills = 6 [json_name = "player2_kills"];
+  int32 enemy_kills = 7 [json_name = "enemy_kills"];
+  int32 duration_seconds = 8 [json_name = "duration_seconds"];
+}
+
+// 结束对局响应。
+message FinishSessionReply {
+  string session_id = 1 [json_name = "session_id"];
+  SessionStatus status = 2;
+}
+
+message ListMapsRequest {}
+
+message ListMapsReply {
+  repeated MapBasicInfo maps = 1;
+}
+
+message GetMapRequest {
+  int64 id = 1;
+}
+
+message GetMapReply {
+  MapDetail map = 1;
+}
+
+// 根据难度返回坦克配置（与 CreateSession 的 difficulty 一致）
+message GetTankConfigRequest {
+  int32 difficulty = 1; // 1=easy, 2=normal, 3=hard，默认 2
+}
+
+message GetTankConfigReply {
+  TankConfigSet config = 1;
+}
+
+// 游戏配置与对局管理相关接口。
+service GameService {
+  // 获取所有可选地图列表。
+  //
+  // HTTP:
+  //   GET /api/v1/game/maps
+  rpc ListMaps(ListMapsRequest) returns (ListMapsReply) {
+    option (google.api.http) = {
+      get: "/api/v1/game/maps";
+    };
+  }
+
+  // 获取单张地图详细配置。
+  //
+  // HTTP:
+  //   GET /api/v1/game/maps/{id}
+  rpc GetMap(GetMapRequest) returns (GetMapReply) {
+    option (google.api.http) = {
+      get: "/api/v1/game/maps/{id}";
+    };
+  }
+
+  // 获取坦克与子弹的基础属性配置。
+  //
+  // HTTP:
+  //   GET /api/v1/game/config/tank
+  rpc GetTankConfig(GetTankConfigRequest) returns (GetTankConfigReply) {
+    option (google.api.http) = {
+      get: "/api/v1/game/config/tank";
+    };
+  }
+
+  // 创建对局。
+  //
+  // HTTP:
+  //   POST /api/v1/game/session
+  //   Body:
+  //   {
+  //     "mode": 1,
+  //     "map_id": 1,
+  //     "local_player_count": 2
+  //   }
+  rpc CreateSession(CreateSessionRequest) returns (CreateSessionReply) {
+    option (google.api.http) = {
+      post: "/api/v1/game/session";
+      body: "*";
+    };
+  }
+
+  // 上报对局结束结果。
+  //
+  // HTTP:
+  //   PATCH /api/v1/game/session/{id}/finish
+  //   Body: FinishSessionRequest（除 session_id 外字段）
+  rpc FinishSession(FinishSessionRequest) returns (FinishSessionReply) {
+    option (google.api.http) = {
+      patch: "/api/v1/game/session/{session_id}/finish";
+      body: "*";
+    };
+  }
+}
+

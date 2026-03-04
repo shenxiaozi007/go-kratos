@@ -1,6 +1,7 @@
 package server
 
 import (
+	gamev1 "realworld/api/game/v1"
 	v1 "realworld/api/realworld/v1"
 	"realworld/internal/conf"
 	"realworld/internal/service"
@@ -11,7 +12,7 @@ import (
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *conf.Server, realWorld *service.RealWorldService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server, realWorld *service.RealWorldService, gameService *service.GameService, logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -28,5 +29,6 @@ func NewGRPCServer(c *conf.Server, realWorld *service.RealWorldService, logger l
 	}
 	srv := grpc.NewServer(opts...)
 	v1.RegisterRealworldServer(srv, realWorld)
+	gamev1.RegisterGameServiceServer(srv, gameService)
 	return srv
 }

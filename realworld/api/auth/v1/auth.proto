@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package auth.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "realworld/api/auth/v1;v1";
+
+// 简单账号体系（可选）：注册、登录、获取当前用户信息。
+service AuthService {
+  // 注册新用户
+  //
+  // HTTP:
+  //   POST /api/v1/auth/register
+  //   Body:
+  //   {
+  //     "username": "foo",
+  //     "password": "bar"
+  //   }
+  rpc Register(RegisterRequest) returns (RegisterReply) {
+    option (google.api.http) = {
+      post: "/api/v1/auth/register";
+      body: "*";
+    };
+  }
+
+  // 登录并返回访问令牌
+  //
+  // HTTP:
+  //   POST /api/v1/auth/login
+  //   Body:
+  //   {
+  //     "username": "foo",
+  //     "password": "bar"
+  //   }
+  rpc Login(LoginRequest) returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/api/v1/auth/login";
+      body: "*";
+    };
+  }
+
+  // 获取当前登录用户信息
+  //
+  // HTTP:
+  //   GET /api/v1/auth/profile
+  //   Header:
+  //     Authorization: Bearer <token>
+  rpc GetProfile(google.protobuf.Empty) returns (GetProfileReply) {
+    option (google.api.http) = {
+      get: "/api/v1/auth/profile";
+    };
+  }
+}
+
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message RegisterReply {
+  int64 user_id = 1;
+  string username = 2;
+}
+
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LoginReply {
+  string access_token = 1;
+  int64 expires_in = 2; // seconds
+}
+
+message GetProfileReply {
+  int64 user_id = 1;
+  string username = 2;
+  int32 total_matches = 3;
+  int32 total_wins = 4;
+  float win_rate = 5;
+}
+
