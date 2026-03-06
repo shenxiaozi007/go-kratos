@@ -1,20 +1,22 @@
 <template>
   <div class="app-root">
-    <div class="app-background"></div>
+    <div class="app-background" aria-hidden="true"></div>
 
-    <main class="app-shell">
+    <a href="#main-content" class="skip-link">跳到主内容</a>
+
+    <main id="main-content" class="app-shell">
       <header class="shell-header">
         <div class="brand">
-          <div class="brand-mark">
+          <div class="brand-mark" aria-hidden="true">
             <span class="brand-badge"></span>
           </div>
           <div class="brand-text">
-            <h1 class="brand-title">坦克大战</h1>
+            <p class="brand-title">坦克大战</p>
             <p class="brand-subtitle">前端单人模式原型（Vue 3）</p>
           </div>
         </div>
 
-        <nav class="nav">
+        <nav class="nav" aria-label="主导航">
           <router-link class="nav-link" to="/">首页</router-link>
           <router-link class="nav-link" to="/game">游戏</router-link>
           <router-link class="nav-link" to="/history">历史战绩</router-link>
@@ -22,7 +24,7 @@
         </nav>
       </header>
 
-      <section class="app-content">
+      <section class="app-content" aria-label="页面内容">
         <router-view />
       </section>
     </main>
@@ -37,6 +39,7 @@ export default {
 
 <style>
 .app-root {
+  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -123,7 +126,7 @@ export default {
 
 .brand-subtitle {
   font-size: 13px;
-  color: #94a3b8;
+  color: #b8c5d6;
 }
 
 .nav {
@@ -151,6 +154,30 @@ export default {
   background: rgba(15, 23, 42, 0.9);
 }
 
+.nav-link:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  padding: 8px 12px;
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 2px solid #38bdf8;
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+  z-index: 100;
+  transition: top 0.2s ease;
+}
+.skip-link:focus {
+  top: 16px;
+  outline: none;
+}
+
 .app-content {
   margin-top: 16px;
 }
@@ -163,7 +190,7 @@ export default {
 
 .page-subtitle {
   font-size: 14px;
-  color: #94a3b8;
+  color: #b8c5d6;
 }
 </style>
 

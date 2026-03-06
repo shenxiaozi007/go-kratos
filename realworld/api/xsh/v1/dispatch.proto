@@ -1,0 +1,204 @@
+// dispatch.proto 定义多账号分发矩阵（Dispatch）模块的 API。
+// 包含：平台账号 CRUD、定时规则、发布任务创建/列表/重试/取消；实际发布由 Playwright-go Worker 消费任务执行。
+
+syntax = "proto3";
+
+package xsh.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/xsh/v1;v1";
+
+// PlatformAccount 平台账号，对应表 xsh_platform_accounts。一账号一 IP（proxy_url）。
+message PlatformAccount {
+  uint64 id = 1;
+  string platform = 2;   // douyin | xiaohongshu
+  string nickname = 3;
+  string proxy_url = 4;
+  string cookie_storage_path = 5;
+  int64 bind_at = 6;
+  int64 created_at = 7;
+  int64 updated_at = 8;
+}
+
+// PublishTask 发布任务，对应表 xsh_publish_tasks。status: pending | running | success | failed | cancelled。
+message PublishTask {
+  uint64 id = 1;
+  uint64 draft_id = 2;
+  uint64 account_id = 3;
+  int64 scheduled_at = 4;
+  int64 published_at = 5;
+  string status = 6;
+  string platform_content_id = 7;
+  string error_message = 8;
+  int64 created_at = 9;
+  int64 updated_at = 10;
+}
+
+// PublishSchedule 定时规则，对应表 xsh_publish_schedules。
+message PublishSchedule {
+  uint64 id = 1;
+  string name = 2;
+  string cron_expr = 3;
+  string account_ids = 4;  // JSON 数组或逗号分隔
+  bool is_enabled = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
+}
+
+message ListPlatformAccountsRequest {
+  string platform = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListPlatformAccountsReply {
+  repeated PlatformAccount items = 1;
+  int64 total = 2;
+}
+
+message BindAccountRequest {
+  string platform = 1;
+  string nickname = 2;
+  string proxy_url = 3;
+  string cookie_storage_path = 4;
+}
+
+message BindAccountReply {
+  PlatformAccount account = 1;
+}
+
+message UpdateAccountRequest {
+  uint64 id = 1;
+  string nickname = 2;
+  string proxy_url = 3;
+  string cookie_storage_path = 4;
+}
+
+message UpdateAccountReply {
+  PlatformAccount account = 1;
+}
+
+message UnbindAccountRequest {
+  uint64 id = 1;
+}
+
+message UnbindAccountReply {
+  bool success = 1;
+}
+
+message ListSchedulesRequest {}
+
+message ListSchedulesReply {
+  repeated PublishSchedule items = 1;
+}
+
+message CreateScheduleRequest {
+  string name = 1;
+  string cron_expr = 2;
+  string account_ids = 3;
+  bool is_enabled = 4;
+}
+
+message CreateScheduleReply {
+  PublishSchedule schedule = 1;
+}
+
+message UpdateScheduleRequest {
+  uint64 id = 1;
+  string name = 2;
+  string cron_expr = 3;
+  string account_ids = 4;
+  bool is_enabled = 5;
+}
+
+message UpdateScheduleReply {
+  PublishSchedule schedule = 1;
+}
+
+message DeleteScheduleRequest {
+  uint64 id = 1;
+}
+
+message DeleteScheduleReply {
+  bool success = 1;
+}
+
+// CreatePublishTask 一条请求为每个 account_id 创建一条任务，返回全部新建任务。
+message CreatePublishTaskRequest {
+  uint64 draft_id = 1;
+  repeated uint64 account_ids = 2;
+  int64 scheduled_at = 3;
+}
+
+message CreatePublishTaskReply {
+  repeated PublishTask tasks = 1;
+}
+
+message ListPublishTasksRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  uint64 account_id = 3;
+  string status = 4;
+}
+
+message ListPublishTasksReply {
+  repeated PublishTask items = 1;
+  int64 total = 2;
+}
+
+message RetryPublishTaskRequest {
+  uint64 id = 1;
+}
+
+message RetryPublishTaskReply {
+  bool success = 1;
+}
+
+message CancelPublishTaskRequest {
+  uint64 id = 1;
+}
+
+message CancelPublishTaskReply {
+  bool success = 1;
+}
+
+// DispatchService 多账号分发矩阵 HTTP/gRPC 服务。
+service DispatchService {
+  rpc ListPlatformAccounts(ListPlatformAccountsRequest) returns (ListPlatformAccountsReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/accounts"; };
+  }
+  rpc BindAccount(BindAccountRequest) returns (BindAccountReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/accounts"; body: "*"; };
+  }
+  rpc UpdateAccount(UpdateAccountRequest) returns (UpdateAccountReply) {
+    option (google.api.http) = { put: "/api/xsh/v1/accounts/{id}"; body: "*"; };
+  }
+  rpc UnbindAccount(UnbindAccountRequest) returns (UnbindAccountReply) {
+    option (google.api.http) = { delete: "/api/xsh/v1/accounts/{id}"; };
+  }
+  rpc ListSchedules(ListSchedulesRequest) returns (ListSchedulesReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/schedules"; };
+  }
+  rpc CreateSchedule(CreateScheduleRequest) returns (CreateScheduleReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/schedules"; body: "*"; };
+  }
+  rpc UpdateSchedule(UpdateScheduleRequest) returns (UpdateScheduleReply) {
+    option (google.api.http) = { put: "/api/xsh/v1/schedules/{id}"; body: "*"; };
+  }
+  rpc DeleteSchedule(DeleteScheduleRequest) returns (DeleteScheduleReply) {
+    option (google.api.http) = { delete: "/api/xsh/v1/schedules/{id}"; };
+  }
+  rpc CreatePublishTask(CreatePublishTaskRequest) returns (CreatePublishTaskReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/publish-tasks"; body: "*"; };
+  }
+  rpc ListPublishTasks(ListPublishTasksRequest) returns (ListPublishTasksReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/publish-tasks"; };
+  }
+  rpc RetryPublishTask(RetryPublishTaskRequest) returns (RetryPublishTaskReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/publish-tasks/{id}/retry"; body: "*"; };
+  }
+  rpc CancelPublishTask(CancelPublishTaskRequest) returns (CancelPublishTaskReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/publish-tasks/{id}/cancel"; body: "*"; };
+  }
+}

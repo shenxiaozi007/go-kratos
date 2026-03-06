@@ -787,6 +787,831 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/stats.v1.ListMatchesReply'
+    /api/xsh/v1/accounts:
+        get:
+            tags:
+                - DispatchService
+            operationId: DispatchService_ListPlatformAccounts
+            parameters:
+                - name: platform
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListPlatformAccountsReply'
+        post:
+            tags:
+                - DispatchService
+            operationId: DispatchService_BindAccount
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.BindAccountRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.BindAccountReply'
+    /api/xsh/v1/accounts/{id}:
+        put:
+            tags:
+                - DispatchService
+            operationId: DispatchService_UpdateAccount
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.UpdateAccountRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.UpdateAccountReply'
+        delete:
+            tags:
+                - DispatchService
+            operationId: DispatchService_UnbindAccount
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.UnbindAccountReply'
+    /api/xsh/v1/comments:
+        get:
+            tags:
+                - InboxService
+            operationId: InboxService_ListComments
+            parameters:
+                - name: accountId
+                  in: query
+                  schema:
+                    type: string
+                - name: wantLink
+                  in: query
+                  schema:
+                    type: boolean
+                - name: status
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListCommentsReply'
+    /api/xsh/v1/comments/sync:
+        post:
+            tags:
+                - InboxService
+            operationId: InboxService_SyncComments
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.SyncCommentsRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.SyncCommentsReply'
+    /api/xsh/v1/comments/{commentId}/private-message:
+        post:
+            tags:
+                - InboxService
+            operationId: InboxService_SendPrivateMessage
+            parameters:
+                - name: commentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.SendPrivateMessageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.SendPrivateMessageReply'
+    /api/xsh/v1/comments/{commentId}/reply:
+        post:
+            tags:
+                - InboxService
+            operationId: InboxService_SendReply
+            parameters:
+                - name: commentId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.SendReplyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.SendReplyReply'
+    /api/xsh/v1/comments/{id}/handled:
+        post:
+            tags:
+                - InboxService
+            operationId: InboxService_MarkCommentHandled
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.MarkCommentHandledRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.MarkCommentHandledReply'
+    /api/xsh/v1/drafts:
+        get:
+            tags:
+                - ContentService
+            operationId: ContentService_ListDrafts
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: status
+                  in: query
+                  schema:
+                    type: string
+                - name: productId
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListDraftsReply'
+        post:
+            tags:
+                - ContentService
+            operationId: ContentService_CreateDraft
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.CreateDraftRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.CreateDraftReply'
+    /api/xsh/v1/drafts/{draftId}/generate-copy:
+        post:
+            tags:
+                - ContentService
+            operationId: ContentService_GenerateCopy
+            parameters:
+                - name: draftId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.GenerateCopyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.GenerateCopyReply'
+    /api/xsh/v1/drafts/{draftId}/generate-cover:
+        post:
+            tags:
+                - ContentService
+            operationId: ContentService_GenerateCover
+            parameters:
+                - name: draftId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.GenerateCoverRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.GenerateCoverReply'
+    /api/xsh/v1/drafts/{draftId}/process-video:
+        post:
+            tags:
+                - ContentService
+            operationId: ContentService_ProcessVideo
+            parameters:
+                - name: draftId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.ProcessVideoRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ProcessVideoReply'
+    /api/xsh/v1/drafts/{id}:
+        get:
+            tags:
+                - ContentService
+            operationId: ContentService_GetDraft
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.GetDraftReply'
+        put:
+            tags:
+                - ContentService
+            operationId: ContentService_UpdateDraft
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.UpdateDraftRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.UpdateDraftReply'
+        delete:
+            tags:
+                - ContentService
+            operationId: ContentService_DeleteDraft
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.DeleteDraftReply'
+    /api/xsh/v1/hot-ranks:
+        get:
+            tags:
+                - ProductService
+            operationId: ProductService_ListHotRanks
+            parameters:
+                - name: rankType
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListHotRanksReply'
+    /api/xsh/v1/hot-ranks/sync:
+        post:
+            tags:
+                - ProductService
+            operationId: ProductService_SyncHotRank
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.SyncHotRankRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.SyncHotRankReply'
+    /api/xsh/v1/inbox-actions:
+        get:
+            tags:
+                - InboxService
+            operationId: InboxService_ListInboxActions
+            parameters:
+                - name: commentId
+                  in: query
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListInboxActionsReply'
+    /api/xsh/v1/products:
+        get:
+            tags:
+                - ProductService
+            operationId: ProductService_ListProducts
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: isHot
+                  in: query
+                  schema:
+                    type: boolean
+                - name: rankSource
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListProductsReply'
+        post:
+            tags:
+                - ProductService
+            operationId: ProductService_CreateProduct
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.CreateProductRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.CreateProductReply'
+    /api/xsh/v1/products/parse:
+        post:
+            tags:
+                - ProductService
+            operationId: ProductService_ParseProductLink
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.ParseProductLinkRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ParseProductLinkReply'
+    /api/xsh/v1/products/{id}:
+        get:
+            tags:
+                - ProductService
+            operationId: ProductService_GetProduct
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.GetProductReply'
+        put:
+            tags:
+                - ProductService
+            operationId: ProductService_UpdateProduct
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.UpdateProductRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.UpdateProductReply'
+        delete:
+            tags:
+                - ProductService
+            operationId: ProductService_DeleteProduct
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.DeleteProductReply'
+    /api/xsh/v1/publish-tasks:
+        get:
+            tags:
+                - DispatchService
+            operationId: DispatchService_ListPublishTasks
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: accountId
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListPublishTasksReply'
+        post:
+            tags:
+                - DispatchService
+            operationId: DispatchService_CreatePublishTask
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.CreatePublishTaskRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.CreatePublishTaskReply'
+    /api/xsh/v1/publish-tasks/{id}/cancel:
+        post:
+            tags:
+                - DispatchService
+            operationId: DispatchService_CancelPublishTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.CancelPublishTaskRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.CancelPublishTaskReply'
+    /api/xsh/v1/publish-tasks/{id}/retry:
+        post:
+            tags:
+                - DispatchService
+            operationId: DispatchService_RetryPublishTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.RetryPublishTaskRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.RetryPublishTaskReply'
+    /api/xsh/v1/schedules:
+        get:
+            tags:
+                - DispatchService
+            operationId: DispatchService_ListSchedules
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListSchedulesReply'
+        post:
+            tags:
+                - DispatchService
+            operationId: DispatchService_CreateSchedule
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.CreateScheduleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.CreateScheduleReply'
+    /api/xsh/v1/schedules/{id}:
+        put:
+            tags:
+                - DispatchService
+            operationId: DispatchService_UpdateSchedule
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.UpdateScheduleRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.UpdateScheduleReply'
+        delete:
+            tags:
+                - DispatchService
+            operationId: DispatchService_DeleteSchedule
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.DeleteScheduleReply'
+    /api/xsh/v1/templates:
+        get:
+            tags:
+                - ContentService
+            operationId: ContentService_ListTemplates
+            parameters:
+                - name: styleType
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.ListTemplatesReply'
+        post:
+            tags:
+                - ContentService
+            operationId: ContentService_CreateTemplate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.CreateTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.CreateTemplateReply'
+    /api/xsh/v1/templates/{id}:
+        put:
+            tags:
+                - ContentService
+            operationId: ContentService_UpdateTemplate
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/xsh.v1.UpdateTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.UpdateTemplateReply'
+        delete:
+            tags:
+                - ContentService
+            operationId: ContentService_DeleteTemplate
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/xsh.v1.DeleteTemplateReply'
 components:
     schemas:
         api.blog.v1.ArticleReply:
@@ -842,6 +1667,8 @@ components:
                 userId:
                     type: string
                 username:
+                    type: string
+                role:
                     type: string
                 totalMatches:
                     type: integer
@@ -1375,12 +2202,672 @@ components:
                     type: string
                     description: 待办事项 ID。
             description: UpdateTodoRequest 用于根据 id 更新待办事项状态（取反）。
+        xsh.v1.BindAccountReply:
+            type: object
+            properties:
+                account:
+                    $ref: '#/components/schemas/xsh.v1.PlatformAccount'
+        xsh.v1.BindAccountRequest:
+            type: object
+            properties:
+                platform:
+                    type: string
+                nickname:
+                    type: string
+                proxyUrl:
+                    type: string
+                cookieStoragePath:
+                    type: string
+        xsh.v1.CancelPublishTaskReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.CancelPublishTaskRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+        xsh.v1.Comment:
+            type: object
+            properties:
+                id:
+                    type: string
+                accountId:
+                    type: string
+                platform:
+                    type: string
+                platformContentId:
+                    type: string
+                platformCommentId:
+                    type: string
+                authorNickname:
+                    type: string
+                content:
+                    type: string
+                wantLink:
+                    type: boolean
+                status:
+                    type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: Comment 评论汇总，对应表 xsh_comments。want_link 由 AI 或规则标记。
+        xsh.v1.CreateDraftReply:
+            type: object
+            properties:
+                draft:
+                    $ref: '#/components/schemas/xsh.v1.Draft'
+        xsh.v1.CreateDraftRequest:
+            type: object
+            properties:
+                productId:
+                    type: string
+                templateId:
+                    type: string
+        xsh.v1.CreateProductReply:
+            type: object
+            properties:
+                product:
+                    $ref: '#/components/schemas/xsh.v1.Product'
+        xsh.v1.CreateProductRequest:
+            type: object
+            properties:
+                sourceUrl:
+                    type: string
+                title:
+                    type: string
+                originalPrice:
+                    type: number
+                    format: double
+                couponAmount:
+                    type: number
+                    format: double
+                commissionRate:
+                    type: number
+                    format: double
+                imageUrl:
+                    type: string
+                isHot:
+                    type: boolean
+                rankSource:
+                    type: string
+            description: CreateProduct 用于手动录入商品（首期不依赖联盟 API）。
+        xsh.v1.CreatePublishTaskReply:
+            type: object
+            properties:
+                tasks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.PublishTask'
+        xsh.v1.CreatePublishTaskRequest:
+            type: object
+            properties:
+                draftId:
+                    type: string
+                accountIds:
+                    type: array
+                    items:
+                        type: string
+                scheduledAt:
+                    type: string
+            description: CreatePublishTask 一条请求为每个 account_id 创建一条任务，返回全部新建任务。
+        xsh.v1.CreateScheduleReply:
+            type: object
+            properties:
+                schedule:
+                    $ref: '#/components/schemas/xsh.v1.PublishSchedule'
+        xsh.v1.CreateScheduleRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                cronExpr:
+                    type: string
+                accountIds:
+                    type: string
+                isEnabled:
+                    type: boolean
+        xsh.v1.CreateTemplateReply:
+            type: object
+            properties:
+                template:
+                    $ref: '#/components/schemas/xsh.v1.Template'
+        xsh.v1.CreateTemplateRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                styleType:
+                    type: string
+                contentTemplate:
+                    type: string
+                sortOrder:
+                    type: integer
+                    format: int32
+        xsh.v1.DeleteDraftReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.DeleteProductReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.DeleteScheduleReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.DeleteTemplateReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.Draft:
+            type: object
+            properties:
+                id:
+                    type: string
+                productId:
+                    type: string
+                templateId:
+                    type: string
+                copyText:
+                    type: string
+                coverImageUrl:
+                    type: string
+                videoUrl:
+                    type: string
+                status:
+                    type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: 'Draft 内容草稿，对应表 xsh_content_drafts。status: draft | ready | published。'
+        xsh.v1.GenerateCopyReply:
+            type: object
+            properties:
+                copyText:
+                    type: string
+        xsh.v1.GenerateCopyRequest:
+            type: object
+            properties:
+                draftId:
+                    type: string
+                style:
+                    type: string
+            description: GenerateCopy 调用 Gemini 3 Flash 按风格生成文案。
+        xsh.v1.GenerateCoverReply:
+            type: object
+            properties:
+                coverImageUrl:
+                    type: string
+        xsh.v1.GenerateCoverRequest:
+            type: object
+            properties:
+                draftId:
+                    type: string
+        xsh.v1.GetDraftReply:
+            type: object
+            properties:
+                draft:
+                    $ref: '#/components/schemas/xsh.v1.Draft'
+        xsh.v1.GetProductReply:
+            type: object
+            properties:
+                product:
+                    $ref: '#/components/schemas/xsh.v1.Product'
+        xsh.v1.HotRank:
+            type: object
+            properties:
+                id:
+                    type: string
+                rankType:
+                    type: string
+                syncedAt:
+                    type: string
+                snapshotJson:
+                    type: string
+                createdAt:
+                    type: string
+            description: HotRank 爆款榜单快照，对应表 xsh_hot_ranks。
+        xsh.v1.InboxAction:
+            type: object
+            properties:
+                id:
+                    type: string
+                commentId:
+                    type: string
+                actionType:
+                    type: string
+                content:
+                    type: string
+                sentAt:
+                    type: string
+                resultStatus:
+                    type: string
+                errorMessage:
+                    type: string
+                createdAt:
+                    type: string
+            description: InboxAction 私信/回复动作记录，对应表 xsh_inbox_actions。
+        xsh.v1.ListCommentsReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.Comment'
+                total:
+                    type: string
+        xsh.v1.ListDraftsReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.Draft'
+                total:
+                    type: string
+        xsh.v1.ListHotRanksReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.HotRank'
+                total:
+                    type: string
+        xsh.v1.ListInboxActionsReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.InboxAction'
+                total:
+                    type: string
+        xsh.v1.ListPlatformAccountsReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.PlatformAccount'
+                total:
+                    type: string
+        xsh.v1.ListProductsReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.Product'
+                total:
+                    type: string
+        xsh.v1.ListPublishTasksReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.PublishTask'
+                total:
+                    type: string
+        xsh.v1.ListSchedulesReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.PublishSchedule'
+        xsh.v1.ListTemplatesReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/xsh.v1.Template'
+        xsh.v1.MarkCommentHandledReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.MarkCommentHandledRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                status:
+                    type: string
+        xsh.v1.ParseProductLinkReply:
+            type: object
+            properties:
+                product:
+                    $ref: '#/components/schemas/xsh.v1.Product'
+                errorMessage:
+                    type: string
+        xsh.v1.ParseProductLinkRequest:
+            type: object
+            properties:
+                url:
+                    type: string
+            description: ParseProductLink 请求：粘贴的淘宝/猫超等链接。
+        xsh.v1.PlatformAccount:
+            type: object
+            properties:
+                id:
+                    type: string
+                platform:
+                    type: string
+                nickname:
+                    type: string
+                proxyUrl:
+                    type: string
+                cookieStoragePath:
+                    type: string
+                bindAt:
+                    type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: PlatformAccount 平台账号，对应表 xsh_platform_accounts。一账号一 IP（proxy_url）。
+        xsh.v1.ProcessVideoReply:
+            type: object
+            properties:
+                videoUrl:
+                    type: string
+        xsh.v1.ProcessVideoRequest:
+            type: object
+            properties:
+                draftId:
+                    type: string
+                options:
+                    type: string
+        xsh.v1.Product:
+            type: object
+            properties:
+                id:
+                    type: string
+                sourceUrl:
+                    type: string
+                title:
+                    type: string
+                originalPrice:
+                    type: number
+                    format: double
+                couponAmount:
+                    type: number
+                    format: double
+                commissionRate:
+                    type: number
+                    format: double
+                imageUrl:
+                    type: string
+                isHot:
+                    type: boolean
+                rankSource:
+                    type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: Product 解析后的商品信息，对应表 xsh_products。
+        xsh.v1.PublishSchedule:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                cronExpr:
+                    type: string
+                accountIds:
+                    type: string
+                isEnabled:
+                    type: boolean
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: PublishSchedule 定时规则，对应表 xsh_publish_schedules。
+        xsh.v1.PublishTask:
+            type: object
+            properties:
+                id:
+                    type: string
+                draftId:
+                    type: string
+                accountId:
+                    type: string
+                scheduledAt:
+                    type: string
+                publishedAt:
+                    type: string
+                status:
+                    type: string
+                platformContentId:
+                    type: string
+                errorMessage:
+                    type: string
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: 'PublishTask 发布任务，对应表 xsh_publish_tasks。status: pending | running | success | failed | cancelled。'
+        xsh.v1.RetryPublishTaskReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.RetryPublishTaskRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+        xsh.v1.SendPrivateMessageReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                actionId:
+                    type: string
+                errorMessage:
+                    type: string
+        xsh.v1.SendPrivateMessageRequest:
+            type: object
+            properties:
+                commentId:
+                    type: string
+                content:
+                    type: string
+        xsh.v1.SendReplyReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                actionId:
+                    type: string
+                errorMessage:
+                    type: string
+        xsh.v1.SendReplyRequest:
+            type: object
+            properties:
+                commentId:
+                    type: string
+                content:
+                    type: string
+        xsh.v1.SyncCommentsReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                syncedCount:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+        xsh.v1.SyncCommentsRequest:
+            type: object
+            properties:
+                accountId:
+                    type: string
+        xsh.v1.SyncHotRankReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+        xsh.v1.SyncHotRankRequest:
+            type: object
+            properties:
+                rankType:
+                    type: string
+        xsh.v1.Template:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                styleType:
+                    type: string
+                contentTemplate:
+                    type: string
+                sortOrder:
+                    type: integer
+                    format: int32
+                createdAt:
+                    type: string
+                updatedAt:
+                    type: string
+            description: Template 文案模板，对应表 xsh_content_templates。
+        xsh.v1.UnbindAccountReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+        xsh.v1.UpdateAccountReply:
+            type: object
+            properties:
+                account:
+                    $ref: '#/components/schemas/xsh.v1.PlatformAccount'
+        xsh.v1.UpdateAccountRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                nickname:
+                    type: string
+                proxyUrl:
+                    type: string
+                cookieStoragePath:
+                    type: string
+        xsh.v1.UpdateDraftReply:
+            type: object
+            properties:
+                draft:
+                    $ref: '#/components/schemas/xsh.v1.Draft'
+        xsh.v1.UpdateDraftRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                copyText:
+                    type: string
+                coverImageUrl:
+                    type: string
+                videoUrl:
+                    type: string
+                status:
+                    type: string
+        xsh.v1.UpdateProductReply:
+            type: object
+            properties:
+                product:
+                    $ref: '#/components/schemas/xsh.v1.Product'
+        xsh.v1.UpdateProductRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                sourceUrl:
+                    type: string
+                title:
+                    type: string
+                originalPrice:
+                    type: number
+                    format: double
+                couponAmount:
+                    type: number
+                    format: double
+                commissionRate:
+                    type: number
+                    format: double
+                imageUrl:
+                    type: string
+                isHot:
+                    type: boolean
+                rankSource:
+                    type: string
+            description: UpdateProductRequest 仅需传 id，其余字段按需传递，非空则更新。
+        xsh.v1.UpdateScheduleReply:
+            type: object
+            properties:
+                schedule:
+                    $ref: '#/components/schemas/xsh.v1.PublishSchedule'
+        xsh.v1.UpdateScheduleRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                cronExpr:
+                    type: string
+                accountIds:
+                    type: string
+                isEnabled:
+                    type: boolean
+        xsh.v1.UpdateTemplateReply:
+            type: object
+            properties:
+                template:
+                    $ref: '#/components/schemas/xsh.v1.Template'
+        xsh.v1.UpdateTemplateRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                styleType:
+                    type: string
+                contentTemplate:
+                    type: string
+                sortOrder:
+                    type: integer
+                    format: int32
 tags:
     - name: Article
     - name: AuthService
       description: 简单账号体系（可选）：注册、登录、获取当前用户信息。
+    - name: ContentService
+      description: ContentService AI 内容加工坊 HTTP/gRPC 服务。
+    - name: DispatchService
+      description: DispatchService 多账号分发矩阵 HTTP/gRPC 服务。
     - name: GameService
       description: 游戏配置与对局管理相关接口。
+    - name: InboxService
+      description: InboxService 获客截流 HTTP/gRPC 服务。
+    - name: ProductService
+      description: ProductService 选品采集仓 HTTP/gRPC 服务。
     - name: Realworld
     - name: StatsService
       description: 战绩查询与排行榜接口。

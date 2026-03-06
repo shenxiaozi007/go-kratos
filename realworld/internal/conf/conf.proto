@@ -21,8 +21,14 @@ message Server {
     string addr = 2;
     google.protobuf.Duration timeout = 3;
   }
+  // Auth 用于 v2 鉴权：JWT 签发与校验（xsh 后台登录、/api/xsh/v1 路由保护）。
+  message Auth {
+    string jwt_secret = 1;         // JWT 签名密钥，必填则启用鉴权
+    int32 jwt_expire_seconds = 2;  // 过期时间（秒），默认 86400
+  }
   HTTP http = 1;
   GRPC grpc = 2;
+  Auth auth = 3;
 }
 
 message Data {

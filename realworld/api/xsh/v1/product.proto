@@ -1,0 +1,153 @@
+// product.proto 定义选品采集仓（Input）模块的 API。
+// 包含：链接解析、商品 CRUD、爆款榜单；首期不接淘宝联盟，支持手动录入与简单解析。
+
+syntax = "proto3";
+
+package xsh.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/xsh/v1;v1";
+
+// Product 解析后的商品信息，对应表 xsh_products。
+message Product {
+  uint64 id = 1;
+  string source_url = 2;
+  string title = 3;
+  double original_price = 4;
+  double coupon_amount = 5;
+  double commission_rate = 6;
+  string image_url = 7;
+  bool is_hot = 8;
+  string rank_source = 9;
+  int64 created_at = 10;  // Unix 秒，与现有项目一致
+  int64 updated_at = 11;
+}
+
+// ParseProductLink 请求：粘贴的淘宝/猫超等链接。
+message ParseProductLinkRequest {
+  string url = 1;
+}
+
+message ParseProductLinkReply {
+  Product product = 1;
+  string error_message = 2;
+}
+
+message ListProductsRequest {
+  int32 page = 1;       // 从 1 起，默认 20
+  int32 page_size = 2;
+  bool is_hot = 3;  // 为 true 时筛选神价
+  string rank_source = 4;
+}
+
+message ListProductsReply {
+  repeated Product items = 1;
+  int64 total = 2;
+}
+
+message GetProductRequest {
+  uint64 id = 1;
+}
+
+message GetProductReply {
+  Product product = 1;
+}
+
+// CreateProduct 用于手动录入商品（首期不依赖联盟 API）。
+message CreateProductRequest {
+  string source_url = 1;
+  string title = 2;
+  double original_price = 3;
+  double coupon_amount = 4;
+  double commission_rate = 5;
+  string image_url = 6;
+  bool is_hot = 7;
+  string rank_source = 8;
+}
+
+message CreateProductReply {
+  Product product = 1;
+}
+
+// UpdateProductRequest 仅需传 id，其余字段按需传递，非空则更新。
+message UpdateProductRequest {
+  uint64 id = 1;
+  string source_url = 2;
+  string title = 3;
+  double original_price = 4;
+  double coupon_amount = 5;
+  double commission_rate = 6;
+  string image_url = 7;
+  bool is_hot = 8;
+  string rank_source = 9;
+}
+
+message UpdateProductReply {
+  Product product = 1;
+}
+
+message DeleteProductRequest {
+  uint64 id = 1;
+}
+
+message DeleteProductReply {
+  bool success = 1;
+}
+
+// HotRank 爆款榜单快照，对应表 xsh_hot_ranks。
+message HotRank {
+  uint64 id = 1;
+  string rank_type = 2;
+  int64 synced_at = 3;
+  string snapshot_json = 4;  // JSON 字符串
+  int64 created_at = 5;
+}
+
+message ListHotRanksRequest {
+  string rank_type = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListHotRanksReply {
+  repeated HotRank items = 1;
+  int64 total = 2;
+}
+
+message SyncHotRankRequest {
+  string rank_type = 1;
+}
+
+message SyncHotRankReply {
+  bool success = 1;
+  string message = 2;
+}
+
+// ProductService 选品采集仓 HTTP/gRPC 服务。
+service ProductService {
+  rpc ParseProductLink(ParseProductLinkRequest) returns (ParseProductLinkReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/products/parse"; body: "*"; };
+  }
+  rpc ListProducts(ListProductsRequest) returns (ListProductsReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/products"; };
+  }
+  rpc GetProduct(GetProductRequest) returns (GetProductReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/products/{id}"; };
+  }
+  rpc CreateProduct(CreateProductRequest) returns (CreateProductReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/products"; body: "*"; };
+  }
+  rpc UpdateProduct(UpdateProductRequest) returns (UpdateProductReply) {
+    option (google.api.http) = { put: "/api/xsh/v1/products/{id}"; body: "*"; };
+  }
+  rpc DeleteProduct(DeleteProductRequest) returns (DeleteProductReply) {
+    option (google.api.http) = { delete: "/api/xsh/v1/products/{id}"; };
+  }
+  rpc ListHotRanks(ListHotRanksRequest) returns (ListHotRanksReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/hot-ranks"; };
+  }
+  rpc SyncHotRank(SyncHotRankRequest) returns (SyncHotRankReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/hot-ranks/sync"; body: "*"; };
+  }
+}

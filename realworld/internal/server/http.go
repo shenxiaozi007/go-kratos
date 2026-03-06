@@ -2,13 +2,17 @@ package server
 
 import (
 	"context"
+
+	authv1 "realworld/api/auth/v1"
 	v2 "realworld/api/blog/v1"
 	gamev1 "realworld/api/game/v1"
+	xshv1 "realworld/api/xsh/v1"
 	v1 "realworld/api/realworld/v1"
 	statsv1 "realworld/api/stats/v1"
 	todov1 "realworld/api/todo/v1"
 	"realworld/internal/conf"
 	"realworld/internal/service"
+	"realworld/pkg/middeware"
 
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware"
@@ -20,21 +24,32 @@ import (
 // NewHTTPServer new an HTTP server.
 // 该函数负责根据配置创建一个 HTTP 服务器实例，并注册所有 HTTP 路由。
 // 我们在此函数中额外注册 Todo 模块相关的 RESTful API。
+// NewHTTPServer 创建 HTTP 服务并注册所有路由，包括 xsh 选品/内容/分发/获客截流 API（/api/xsh/v1/...）。
 func NewHTTPServer(
 	c *conf.Server,
 	greeter *service.RealWorldService,
 	logger log.Logger,
+	authService *service.AuthService,
 	articleService *service.ArticleService,
 	todoService *service.TodoService,
 	gameService *service.GameService,
 	statsService *service.StatsService,
+	xshProductService *service.XshProductService,
+	xshContentService *service.XshContentService,
+	xshDispatchService *service.XshDispatchService,
+	xshInboxService *service.XshInboxService,
 ) *http.Server {
+	// v2：若配置了 JWT 密钥，则启用鉴权中间件；/api/v1/auth/login、register 白名单放行，其余需 Bearer Token。
+	jwtSecret := ""
+	if c.GetAuth() != nil {
+		jwtSecret = c.GetAuth().GetJwtSecret()
+	}
+	middlewares := []middleware.Middleware{recovery.Recovery(), CorsMiddleware()}
+	if jwtSecret != "" {
+		middlewares = append(middlewares, middeware.JWTAuth(jwtSecret))
+	}
 	var opts = []http.ServerOption{
-		http.Middleware(
-			recovery.Recovery(),
-			//middeware.JWTAuth(),
-			CorsMiddleware(),
-		),
+		http.Middleware(middlewares...),
 	}
 	if c.Http.Network != "" {
 		opts = append(opts, http.Network(c.Http.Network))
@@ -55,6 +70,9 @@ func NewHTTPServer(
 
 	v1.RegisterRealworldHTTPServer(srv, greeter)
 
+	// v2 鉴权：注册、登录、获取当前用户（GetProfile 需 JWT）
+	authv1.RegisterAuthServiceHTTPServer(srv, authService)
+
 	v2.RegisterArticleHTTPServer(srv, articleService)
 
 	// 使用 proto 生成的 HTTP 注册函数来注册 Todo 模块路由，
@@ -65,6 +83,12 @@ func NewHTTPServer(
 	// 注册 GameService 的 HTTP 路由，具体映射见 api/game/v1/game.proto 中的注解。
 	gamev1.RegisterGameServiceHTTPServer(srv, gameService)
 	statsv1.RegisterStatsServiceHTTPServer(srv, statsService)
+
+	// xsh 选品/内容/分发/获客截流（见 xsh-docs）
+	xshv1.RegisterProductServiceHTTPServer(srv, xshProductService)
+	xshv1.RegisterContentServiceHTTPServer(srv, xshContentService)
+	xshv1.RegisterDispatchServiceHTTPServer(srv, xshDispatchService)
+	xshv1.RegisterInboxServiceHTTPServer(srv, xshInboxService)
 
 	return srv
 }

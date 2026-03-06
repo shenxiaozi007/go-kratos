@@ -37,12 +37,12 @@ type MapTile struct {
 
 // GameSession 表示一局游戏对战的领域模型。
 type GameSession struct {
-	SessionID       string
-	Mode            gamev1.GameMode
-	MapID           int64
+	SessionID        string
+	Mode             gamev1.GameMode
+	MapID            int64
 	LocalPlayerCount int32
-	Status          gamev1.SessionStatus
-	CreatedAt       time.Time
+	Status           gamev1.SessionStatus
+	CreatedAt        time.Time
 }
 
 // GameResult 表示一局游戏结束后用于统计的结果数据。
@@ -83,11 +83,11 @@ type GameConfigProvider interface {
 
 // GameUsecase 封装与游戏配置、地图与对局管理相关的业务用例。
 type GameUsecase struct {
-	maps   MapRepo
+	maps     MapRepo
 	sessions GameSessionRepo
-	stats  GameStatsRepo
-	config GameConfigProvider
-	log    *log.Helper
+	stats    GameStatsRepo
+	config   GameConfigProvider
+	log      *log.Helper
 }
 
 // NewGameUsecase 创建 GameUsecase 实例。
@@ -132,12 +132,12 @@ func (uc *GameUsecase) CreateSession(ctx context.Context, mode gamev1.GameMode, 
 	sessionID := generateSessionID()
 	now := time.Now()
 	session := &GameSession{
-		SessionID:       sessionID,
-		Mode:            mode,
-		MapID:           mapID,
+		SessionID:        sessionID,
+		Mode:             mode,
+		MapID:            mapID,
 		LocalPlayerCount: localPlayerCount,
-		Status:          gamev1.SessionStatus_SESSION_STATUS_CREATED,
-		CreatedAt:       now,
+		Status:           gamev1.SessionStatus_SESSION_STATUS_CREATED,
+		CreatedAt:        now,
 	}
 
 	if err := uc.sessions.CreateSession(ctx, session); err != nil {
@@ -177,4 +177,3 @@ func (uc *GameUsecase) FinishSession(ctx context.Context, res *GameResult) error
 func generateSessionID() string {
 	return time.Now().Format("20060102150405.000000000")
 }
-

@@ -3,19 +3,19 @@
     <h1 class="page-title">排行榜</h1>
     <p class="page-subtitle">按胜场排序，展示总场次与胜率。</p>
 
-    <div v-if="loading" class="loading">加载中…</div>
-    <p v-else-if="error" class="error-msg">{{ error }}</p>
+    <div v-if="loading" class="loading" role="status" aria-live="polite" aria-busy="true">加载中…</div>
+    <p v-else-if="error" class="error-msg" role="alert">{{ error }}</p>
 
     <template v-else>
       <div class="panel table-wrap">
         <table class="table">
           <thead>
             <tr>
-              <th>排名</th>
-              <th>用户</th>
-              <th>总场次</th>
-              <th>胜场</th>
-              <th>胜率</th>
+              <th scope="col">排名</th>
+              <th scope="col">用户</th>
+              <th scope="col">总场次</th>
+              <th scope="col">胜场</th>
+              <th scope="col">胜率</th>
             </tr>
           </thead>
           <tbody>
@@ -158,5 +158,11 @@ export default {
 
 .nav-link a:hover {
   text-decoration: underline;
+}
+
+.nav-link a:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 </style>

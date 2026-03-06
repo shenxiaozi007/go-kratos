@@ -1,0 +1,189 @@
+// content.proto 定义 AI 内容加工坊（Core）模块的 API。
+// 包含：文案模板 CRUD、草稿 CRUD、Gemini 文案生成、封面合成、视频去重。
+
+syntax = "proto3";
+
+package xsh.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/xsh/v1;v1";
+
+// Template 文案模板，对应表 xsh_content_templates。
+message Template {
+  uint64 id = 1;
+  string name = 2;
+  string style_type = 3;
+  string content_template = 4;
+  int32 sort_order = 5;
+  int64 created_at = 6;
+  int64 updated_at = 7;
+}
+
+// Draft 内容草稿，对应表 xsh_content_drafts。status: draft | ready | published。
+message Draft {
+  uint64 id = 1;
+  uint64 product_id = 2;
+  uint64 template_id = 3;
+  string copy_text = 4;
+  string cover_image_url = 5;
+  string video_url = 6;
+  string status = 7;
+  int64 created_at = 8;
+  int64 updated_at = 9;
+}
+
+message ListTemplatesRequest {
+  string style_type = 1;  // 可选筛选
+}
+
+message ListTemplatesReply {
+  repeated Template items = 1;
+}
+
+message CreateTemplateRequest {
+  string name = 1;
+  string style_type = 2;
+  string content_template = 3;
+  int32 sort_order = 4;
+}
+
+message CreateTemplateReply {
+  Template template = 1;
+}
+
+message UpdateTemplateRequest {
+  uint64 id = 1;
+  string name = 2;
+  string style_type = 3;
+  string content_template = 4;
+  int32 sort_order = 5;
+}
+
+message UpdateTemplateReply {
+  Template template = 1;
+}
+
+message DeleteTemplateRequest {
+  uint64 id = 1;
+}
+
+message DeleteTemplateReply {
+  bool success = 1;
+}
+
+message CreateDraftRequest {
+  uint64 product_id = 1;
+  uint64 template_id = 2;
+}
+
+message CreateDraftReply {
+  Draft draft = 1;
+}
+
+message ListDraftsRequest {
+  int32 page = 1;
+  int32 page_size = 2;
+  string status = 3;
+  uint64 product_id = 4;
+}
+
+message ListDraftsReply {
+  repeated Draft items = 1;
+  int64 total = 2;
+}
+
+message GetDraftRequest {
+  uint64 id = 1;
+}
+
+message GetDraftReply {
+  Draft draft = 1;
+}
+
+message UpdateDraftRequest {
+  uint64 id = 1;
+  string copy_text = 2;
+  string cover_image_url = 3;
+  string video_url = 4;
+  string status = 5;
+}
+
+message UpdateDraftReply {
+  Draft draft = 1;
+}
+
+message DeleteDraftRequest {
+  uint64 id = 1;
+}
+
+message DeleteDraftReply {
+  bool success = 1;
+}
+
+// GenerateCopy 调用 Gemini 3 Flash 按风格生成文案。
+message GenerateCopyRequest {
+  uint64 draft_id = 1;
+  string style = 2;  // 对应模板 style_type
+}
+
+message GenerateCopyReply {
+  string copy_text = 1;
+}
+
+message GenerateCoverRequest {
+  uint64 draft_id = 1;
+}
+
+message GenerateCoverReply {
+  string cover_image_url = 1;
+}
+
+message ProcessVideoRequest {
+  uint64 draft_id = 1;
+  string options = 2;  // 抽帧/镜像/滤镜等，可 JSON
+}
+
+message ProcessVideoReply {
+  string video_url = 1;
+}
+
+// ContentService AI 内容加工坊 HTTP/gRPC 服务。
+service ContentService {
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/templates"; };
+  }
+  rpc CreateTemplate(CreateTemplateRequest) returns (CreateTemplateReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/templates"; body: "*"; };
+  }
+  rpc UpdateTemplate(UpdateTemplateRequest) returns (UpdateTemplateReply) {
+    option (google.api.http) = { put: "/api/xsh/v1/templates/{id}"; body: "*"; };
+  }
+  rpc DeleteTemplate(DeleteTemplateRequest) returns (DeleteTemplateReply) {
+    option (google.api.http) = { delete: "/api/xsh/v1/templates/{id}"; };
+  }
+  rpc CreateDraft(CreateDraftRequest) returns (CreateDraftReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/drafts"; body: "*"; };
+  }
+  rpc ListDrafts(ListDraftsRequest) returns (ListDraftsReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/drafts"; };
+  }
+  rpc GetDraft(GetDraftRequest) returns (GetDraftReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/drafts/{id}"; };
+  }
+  rpc UpdateDraft(UpdateDraftRequest) returns (UpdateDraftReply) {
+    option (google.api.http) = { put: "/api/xsh/v1/drafts/{id}"; body: "*"; };
+  }
+  rpc DeleteDraft(DeleteDraftRequest) returns (DeleteDraftReply) {
+    option (google.api.http) = { delete: "/api/xsh/v1/drafts/{id}"; };
+  }
+  rpc GenerateCopy(GenerateCopyRequest) returns (GenerateCopyReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/drafts/{draft_id}/generate-copy"; body: "*"; };
+  }
+  rpc GenerateCover(GenerateCoverRequest) returns (GenerateCoverReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/drafts/{draft_id}/generate-cover"; body: "*"; };
+  }
+  rpc ProcessVideo(ProcessVideoRequest) returns (ProcessVideoReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/drafts/{draft_id}/process-video"; body: "*"; };
+  }
+}

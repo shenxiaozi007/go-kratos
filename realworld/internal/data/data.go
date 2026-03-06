@@ -12,10 +12,12 @@ import (
 )
 
 // ProviderSet is data providers.
+// 包含选品/内容/分发/获客截流（xsh）模块的仓储。
 var ProviderSet = wire.NewSet(
 	NewData,
-	NewGreeterRepo,
 	NewDB,
+	NewGreeterRepo,
+	NewUserRepo,
 	NewArticleRepo,
 	NewTodoRepo,
 	NewGameMapRepo,
@@ -23,6 +25,19 @@ var ProviderSet = wire.NewSet(
 	NewGameStatsRepo,
 	NewGameConfigProvider,
 	NewStatsRepo,
+	// xsh 选品采集仓
+	NewXshProductRepo,
+	NewXshHotRankRepo,
+	// xsh AI 内容加工坊
+	NewXshTemplateRepo,
+	NewXshDraftRepo,
+	// xsh 多账号分发矩阵
+	NewXshPlatformAccountRepo,
+	NewXshPublishTaskRepo,
+	NewXshScheduleRepo,
+	// xsh 获客截流
+	NewXshCommentRepo,
+	NewXshInboxActionRepo,
 )
 
 // Data .
@@ -50,6 +65,7 @@ func NewData(c *conf.Data, db *gorm.DB) (*Data, func(), error) {
 	//   - map_tiles      （地图格子明细表）
 	//   - game_sessions  （游戏对局表）
 	//   - match_records  （战绩记录表）
+	//   - xsh_*         （选品/内容/分发/获客截流表，见 xsh-docs）
 	if err := db.AutoMigrate(
 		&TodoPO{},
 		&UserPO{},
@@ -57,6 +73,20 @@ func NewData(c *conf.Data, db *gorm.DB) (*Data, func(), error) {
 		&MapTilePO{},
 		&GameSessionPO{},
 		&MatchRecordPO{},
+		// xsh 选品
+		&XshProductPO{},
+		&XshHotRankPO{},
+		&XshProductLinkPO{},
+		// xsh 内容
+		&XshContentTemplatePO{},
+		&XshContentDraftPO{},
+		// xsh 分发
+		&XshPlatformAccountPO{},
+		&XshPublishTaskPO{},
+		&XshPublishSchedulePO{},
+		// xsh 获客截流
+		&XshCommentPO{},
+		&XshInboxActionPO{},
 	); err != nil {
 		return nil, nil, err
 	}

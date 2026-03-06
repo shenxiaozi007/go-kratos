@@ -3,43 +3,45 @@
     <h1 class="page-title">坦克大战</h1>
     <p class="page-subtitle">选择模式、难度与地图，开始一局战斗。</p>
 
-    <section class="panel">
-      <h2 class="panel-title">模式</h2>
-      <div class="button-group">
-        <button type="button" class="btn" :class="{ 'btn-primary': mode === 'single' }" @click="mode = 'single'">
+    <section class="panel" aria-labelledby="mode-heading">
+      <h2 id="mode-heading" class="panel-title">模式</h2>
+      <div class="button-group" role="group" aria-label="游戏模式">
+        <button type="button" class="btn" :class="{ 'btn-primary': mode === 'single' }" @click="mode = 'single'" aria-pressed="mode === 'single'">
           单人模式
         </button>
-        <button type="button" class="btn" disabled>
+        <button type="button" class="btn" disabled aria-disabled="true" title="功能开发中">
           本地双人（待实现）
         </button>
       </div>
     </section>
 
-    <section class="panel">
-      <h2 class="panel-title">难度</h2>
-      <div class="button-group">
-        <button type="button" class="btn" :class="{ 'btn-primary': difficulty === 1 }" @click="difficulty = 1">
+    <section class="panel" aria-labelledby="difficulty-heading">
+      <h2 id="difficulty-heading" class="panel-title">难度</h2>
+      <div class="button-group" role="group" aria-label="难度">
+        <button type="button" class="btn" :class="{ 'btn-primary': difficulty === 1 }" @click="difficulty = 1" aria-pressed="difficulty === 1">
           简单
         </button>
-        <button type="button" class="btn" :class="{ 'btn-primary': difficulty === 2 }" @click="difficulty = 2">
+        <button type="button" class="btn" :class="{ 'btn-primary': difficulty === 2 }" @click="difficulty = 2" aria-pressed="difficulty === 2">
           普通
         </button>
-        <button type="button" class="btn" :class="{ 'btn-primary': difficulty === 3 }" @click="difficulty = 3">
+        <button type="button" class="btn" :class="{ 'btn-primary': difficulty === 3 }" @click="difficulty = 3" aria-pressed="difficulty === 3">
           困难
         </button>
       </div>
     </section>
 
-    <section class="panel">
-      <h2 class="panel-title">地图</h2>
-      <div v-if="mapsLoading" class="loading-inline">加载地图中…</div>
-      <div v-else class="button-group">
+    <section class="panel" aria-labelledby="map-heading">
+      <h2 id="map-heading" class="panel-title">地图</h2>
+      <div v-if="mapsLoading" class="loading-inline" role="status" aria-live="polite" aria-busy="true">加载地图中…</div>
+      <div v-else class="button-group" role="group" aria-label="选择地图">
         <button
           v-for="m in maps"
           :key="m.id"
           type="button"
           class="btn"
           :class="{ 'btn-primary': Number(m.id) === Number(mapId) }"
+          :aria-pressed="Number(m.id) === Number(mapId)"
+          :aria-label="`选择地图：${m.name}`"
           @click="mapId = Number(m.id) || 1"
         >
           {{ m.name }}
@@ -49,10 +51,10 @@
     </section>
 
     <section class="panel actions">
-      <button type="button" class="btn btn-primary btn-lg" :disabled="loading" @click="goGame">
+      <button type="button" class="btn btn-primary btn-lg" :disabled="loading" :aria-busy="loading" @click="goGame">
         {{ loading ? '创建对局中…' : '进入游戏' }}
       </button>
-      <p v-if="error" class="error-msg">{{ error }}</p>
+      <p v-if="error" class="error-msg" role="alert">{{ error }}</p>
     </section>
   </div>
 </template>
@@ -145,7 +147,7 @@ export default {
 }
 
 .page-subtitle {
-  color: #606266;
+  color: #4b5563;
   margin-bottom: 24px;
 }
 
@@ -211,8 +213,14 @@ export default {
 
 .loading-inline,
 .hint {
-  color: #6b7280;
+  color: #4b5563;
   font-size: 14px;
+}
+
+.btn:focus-visible,
+.btn-primary:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
 }
 </style>
 

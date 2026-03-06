@@ -3,23 +3,23 @@
     <h1 class="page-title">历史战绩</h1>
     <p class="page-subtitle">最近对局记录，分页展示。</p>
 
-    <div v-if="loading" class="loading">加载中…</div>
-    <p v-else-if="error" class="error-msg">{{ error }}</p>
+    <div v-if="loading" class="loading" role="status" aria-live="polite" aria-busy="true">加载中…</div>
+    <p v-else-if="error" class="error-msg" role="alert">{{ error }}</p>
 
     <template v-else>
       <div class="panel table-wrap">
         <table class="table">
           <thead>
             <tr>
-              <th>对局 ID</th>
-              <th>模式</th>
-              <th>地图</th>
-              <th>胜负</th>
-              <th>P1击杀</th>
-              <th>P2击杀</th>
-              <th>敌方击杀</th>
-              <th>时长(秒)</th>
-              <th>时间</th>
+              <th scope="col">对局 ID</th>
+              <th scope="col">模式</th>
+              <th scope="col">地图</th>
+              <th scope="col">胜负</th>
+              <th scope="col">P1击杀</th>
+              <th scope="col">P2击杀</th>
+              <th scope="col">敌方击杀</th>
+              <th scope="col">时长(秒)</th>
+              <th scope="col">时间</th>
             </tr>
           </thead>
           <tbody>
@@ -38,11 +38,11 @@
         </table>
         <p v-if="records.length === 0" class="empty">暂无战绩</p>
       </div>
-      <div class="pagination">
-        <button type="button" class="btn" :disabled="page <= 1" @click="loadPage(page - 1)">上一页</button>
-        <span class="page-info">第 {{ page }} 页，共 {{ total }} 条</span>
-        <button type="button" class="btn" :disabled="page * pageSize >= total" @click="loadPage(page + 1)">下一页</button>
-      </div>
+      <nav class="pagination" aria-label="历史战绩分页">
+        <button type="button" class="btn" :disabled="page <= 1" @click="loadPage(page - 1)" :aria-label="`上一页，当前第 ${page} 页`">上一页</button>
+        <span class="page-info" aria-live="polite">第 {{ page }} 页，共 {{ total }} 条</span>
+        <button type="button" class="btn" :disabled="page * pageSize >= total" @click="loadPage(page + 1)" :aria-label="`下一页，当前第 ${page} 页`">下一页</button>
+      </nav>
     </template>
 
     <p class="nav-link">
@@ -206,6 +206,17 @@ export default {
 
 .btn:hover:not(:disabled) {
   background: #f3f4f6;
+}
+
+.btn:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+.nav-link a:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
 .nav-link {

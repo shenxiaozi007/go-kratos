@@ -235,9 +235,10 @@ type GetProfileReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        int64                  `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	Username      string                 `protobuf:"bytes,2,opt,name=username,proto3" json:"username,omitempty"`
-	TotalMatches  int32                  `protobuf:"varint,3,opt,name=total_matches,json=totalMatches,proto3" json:"total_matches,omitempty"`
-	TotalWins     int32                  `protobuf:"varint,4,opt,name=total_wins,json=totalWins,proto3" json:"total_wins,omitempty"`
-	WinRate       float32                `protobuf:"fixed32,5,opt,name=win_rate,json=winRate,proto3" json:"win_rate,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"` // v2：operator / admin，前端用于菜单与按钮权限
+	TotalMatches  int32                  `protobuf:"varint,4,opt,name=total_matches,json=totalMatches,proto3" json:"total_matches,omitempty"`
+	TotalWins     int32                  `protobuf:"varint,5,opt,name=total_wins,json=totalWins,proto3" json:"total_wins,omitempty"`
+	WinRate       float32                `protobuf:"fixed32,6,opt,name=win_rate,json=winRate,proto3" json:"win_rate,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -286,6 +287,13 @@ func (x *GetProfileReply) GetUsername() string {
 	return ""
 }
 
+func (x *GetProfileReply) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
 func (x *GetProfileReply) GetTotalMatches() int32 {
 	if x != nil {
 		return x.TotalMatches
@@ -325,14 +333,15 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"LoginReply\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12\x1d\n" +
 	"\n" +
-	"expires_in\x18\x02 \x01(\x03R\texpiresIn\"\xa5\x01\n" +
+	"expires_in\x18\x02 \x01(\x03R\texpiresIn\"\xb9\x01\n" +
 	"\x0fGetProfileReply\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x03R\x06userId\x12\x1a\n" +
-	"\busername\x18\x02 \x01(\tR\busername\x12#\n" +
-	"\rtotal_matches\x18\x03 \x01(\x05R\ftotalMatches\x12\x1d\n" +
+	"\busername\x18\x02 \x01(\tR\busername\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\x12#\n" +
+	"\rtotal_matches\x18\x04 \x01(\x05R\ftotalMatches\x12\x1d\n" +
 	"\n" +
-	"total_wins\x18\x04 \x01(\x05R\ttotalWins\x12\x19\n" +
-	"\bwin_rate\x18\x05 \x01(\x02R\awinRate2\x9f\x02\n" +
+	"total_wins\x18\x05 \x01(\x05R\ttotalWins\x12\x19\n" +
+	"\bwin_rate\x18\x06 \x01(\x02R\awinRate2\x9f\x02\n" +
 	"\vAuthService\x12^\n" +
 	"\bRegister\x12\x18.auth.v1.RegisterRequest\x1a\x16.auth.v1.RegisterReply\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/api/v1/auth/register\x12R\n" +
 	"\x05Login\x12\x15.auth.v1.LoginRequest\x1a\x13.auth.v1.LoginReply\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/api/v1/auth/login\x12\\\n" +

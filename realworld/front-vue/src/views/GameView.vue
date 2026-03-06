@@ -5,7 +5,7 @@
       <p class="page-subtitle">WASD 移动，空格开火（占位）。按 <kbd>E</kbd> 结束对局并上报战绩。</p>
     </header>
 
-    <section v-if="result" class="result-panel">
+    <section v-if="result" class="result-panel" role="status" aria-live="polite">
       <div class="panel">
         <h2 class="panel-title">{{ result.success ? '对局已记录' : '上报失败' }}</h2>
         <p>{{ result.message }}</p>
@@ -15,9 +15,9 @@
 
     <section v-else class="game-layout">
       <div class="game-canvas-wrapper">
-        <canvas ref="canvas" class="game-canvas" width="640" height="480"></canvas>
+        <canvas ref="canvas" class="game-canvas" width="640" height="480" role="img" aria-label="坦克大战游戏画面，使用 WASD 移动、空格开火、E 键结束对局"></canvas>
       </div>
-      <aside class="game-sidebar">
+      <aside class="game-sidebar" aria-label="游戏状态与操作">
         <div class="panel">
           <h2 class="panel-title">当前状态</h2>
           <p>FPS: {{ fps }}</p>
@@ -227,6 +227,11 @@ kbd {
   border-radius: 4px;
   background: rgba(15, 23, 42, 0.9);
   font-size: 12px;
+}
+
+.btn:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
 }
 </style>
 

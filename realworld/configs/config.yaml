@@ -5,6 +5,10 @@ server:
   grpc:
     addr: 0.0.0.0:9000
     timeout: 1s
+  # v2 鉴权：JWT 密钥与过期时间；留空则 xsh 接口不强制鉴权（仅开发环境可留空）。
+  auth:
+    jwt_secret: "xsh-v2-secret-change-in-production"
+    jwt_expire_seconds: 86400
 data:
   database:
     driver: mysql

@@ -77,8 +77,9 @@ message LoginReply {
 message GetProfileReply {
   int64 user_id = 1;
   string username = 2;
-  int32 total_matches = 3;
-  int32 total_wins = 4;
-  float win_rate = 5;
+  string role = 3;  // v2：operator / admin，前端用于菜单与按钮权限
+  int32 total_matches = 4;
+  int32 total_wins = 5;
+  float win_rate = 6;
 }
 

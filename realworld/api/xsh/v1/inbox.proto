@@ -1,0 +1,124 @@
+// inbox.proto 定义获客截流（Inbox）模块的 API。
+// 包含：评论列表与筛选、标记已处理、同步评论、回复/私信、动作记录。
+
+syntax = "proto3";
+
+package xsh.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/xsh/v1;v1";
+
+// Comment 评论汇总，对应表 xsh_comments。want_link 由 AI 或规则标记。
+message Comment {
+  uint64 id = 1;
+  uint64 account_id = 2;
+  string platform = 3;
+  string platform_content_id = 4;
+  string platform_comment_id = 5;
+  string author_nickname = 6;
+  string content = 7;
+  bool want_link = 8;
+  string status = 9;  // pending | replied | ignored
+  int64 created_at = 10;
+  int64 updated_at = 11;
+}
+
+// InboxAction 私信/回复动作记录，对应表 xsh_inbox_actions。
+message InboxAction {
+  uint64 id = 1;
+  uint64 comment_id = 2;
+  string action_type = 3;  // reply | private_message
+  string content = 4;
+  int64 sent_at = 5;
+  string result_status = 6;
+  string error_message = 7;
+  int64 created_at = 8;
+}
+
+message ListCommentsRequest {
+  uint64 account_id = 1;
+  bool want_link = 2;  // 为 true 时仅查「求链接」
+  string status = 3;
+  int32 page = 4;
+  int32 page_size = 5;
+}
+
+message ListCommentsReply {
+  repeated Comment items = 1;
+  int64 total = 2;
+}
+
+message MarkCommentHandledRequest {
+  uint64 id = 1;
+  string status = 2;  // replied | ignored
+}
+
+message MarkCommentHandledReply {
+  bool success = 1;
+}
+
+message SyncCommentsRequest {
+  uint64 account_id = 1;
+}
+
+message SyncCommentsReply {
+  bool success = 1;
+  int32 synced_count = 2;
+  string message = 3;
+}
+
+message SendReplyRequest {
+  uint64 comment_id = 1;
+  string content = 2;
+}
+
+message SendReplyReply {
+  bool success = 1;
+  uint64 action_id = 2;
+  string error_message = 3;
+}
+
+message SendPrivateMessageRequest {
+  uint64 comment_id = 1;
+  string content = 2;
+}
+
+message SendPrivateMessageReply {
+  bool success = 1;
+  uint64 action_id = 2;
+  string error_message = 3;
+}
+
+message ListInboxActionsRequest {
+  uint64 comment_id = 1;
+  int32 page = 2;
+  int32 page_size = 3;
+}
+
+message ListInboxActionsReply {
+  repeated InboxAction items = 1;
+  int64 total = 2;
+}
+
+// InboxService 获客截流 HTTP/gRPC 服务。
+service InboxService {
+  rpc ListComments(ListCommentsRequest) returns (ListCommentsReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/comments"; };
+  }
+  rpc MarkCommentHandled(MarkCommentHandledRequest) returns (MarkCommentHandledReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/comments/{id}/handled"; body: "*"; };
+  }
+  rpc SyncComments(SyncCommentsRequest) returns (SyncCommentsReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/comments/sync"; body: "*"; };
+  }
+  rpc SendReply(SendReplyRequest) returns (SendReplyReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/comments/{comment_id}/reply"; body: "*"; };
+  }
+  rpc SendPrivateMessage(SendPrivateMessageRequest) returns (SendPrivateMessageReply) {
+    option (google.api.http) = { post: "/api/xsh/v1/comments/{comment_id}/private-message"; body: "*"; };
+  }
+  rpc ListInboxActions(ListInboxActionsRequest) returns (ListInboxActionsReply) {
+    option (google.api.http) = { get: "/api/xsh/v1/inbox-actions"; };
+  }
+}
