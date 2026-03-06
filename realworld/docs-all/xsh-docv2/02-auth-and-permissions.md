@@ -65,7 +65,7 @@
 ### 4.1 登录页
 
 - 提供登录表单：用户名、密码；提交调用 `POST /api/v1/auth/login`，成功后保存返回的 `access_token`、`expires_in`。
-- 可选：注册入口，调用 `POST /api/v1/auth/register`。
+- **注册入口**：提供注册页（如 `/register`）或登录页内入口；提交调用 `POST /api/v1/auth/register`，注册成功后可自动调用 `POST /api/v1/auth/login` 直接登录。
 
 ### 4.2 Token 存储与请求头
 

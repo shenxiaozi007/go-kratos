@@ -9,6 +9,7 @@ const TOKEN_KEY = 'xsh_access_token'
 
 const routes = [
   { path: '/login', name: 'Login', component: () => import('../views/Login.vue'), meta: { title: '登录', public: true } },
+  { path: '/register', name: 'Register', component: () => import('../views/Register.vue'), meta: { title: '注册', public: true } },
   {
     path: '/xsh',
     component: XshLayout,
@@ -42,7 +43,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem(TOKEN_KEY)
-  if (to.path === '/login') {
+  if (to.path === '/login' || to.path === '/register') {
     if (token) return next('/xsh/product/list')
     return next()
   }

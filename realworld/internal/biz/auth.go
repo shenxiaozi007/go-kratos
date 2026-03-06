@@ -12,8 +12,9 @@ import (
 // 业务错误
 var (
 	ErrUserExists   = errors.New("username already exists")
-	ErrUserNotFound = errors.New("user not found")
-	ErrBadPassword  = errors.New("invalid password")
+	// ErrAuthUserNotFound 避免与其他模块的 ErrUserNotFound 命名冲突。
+	ErrAuthUserNotFound = errors.New("user not found")
+	ErrBadPassword      = errors.New("invalid password")
 )
 
 // User 鉴权用用户实体（与 data.UserPO 解耦，避免 biz 依赖 data）。
@@ -72,7 +73,7 @@ func (uc *AuthUsecase) Login(ctx context.Context, username, plainPassword string
 	u, err := uc.userRepo.GetByUsername(ctx, username)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, ErrUserNotFound
+			return nil, ErrAuthUserNotFound
 		}
 		return nil, err
 	}

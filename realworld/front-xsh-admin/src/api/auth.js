@@ -17,6 +17,14 @@ export function login(username, password) {
 }
 
 /**
+ * 注册，返回 { user_id, username }
+ * 注意：注册不会返回 token，需要再调用 login 或跳转登录页。
+ */
+export function register(username, password) {
+  return authRequest.post('/auth/register', { username, password }).then((res) => res.data)
+}
+
+/**
  * 获取当前用户信息（需已登录，Header 带 Authorization: Bearer <token>）
  * 返回 { user_id, username, role, ... }
  */

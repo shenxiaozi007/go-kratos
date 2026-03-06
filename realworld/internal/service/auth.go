@@ -3,25 +3,24 @@ package service
 
 import (
 	"context"
-	"errors"
+	stderrors "errors"
 
 	authv1 "realworld/api/auth/v1"
 	"realworld/internal/biz"
 	"realworld/internal/conf"
 	"realworld/pkg/auth"
 
-	"github.com/go-kratos/kratos/v2/errors"
+	kerrors "github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"golang.org/x/crypto/bcrypt"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-func errBadRequest(msg string) error { return errors.New(400, "BAD_REQUEST", msg) }
-func errUnauthorized(msg string) error { return errors.New(401, "UNAUTHORIZED", msg) }
+func errBadRequest(msg string) error   { return kerrors.New(400, "BAD_REQUEST", msg) }
+func errUnauthorized(msg string) error { return kerrors.New(401, "UNAUTHORIZED", msg) }
 
 // AuthService 实现 api/auth/v1 AuthServiceHTTPServer，提供注册、登录、GetProfile。
 type AuthService struct {
-	authv1.UnimplementedAuthServiceHTTPServer
 	uc     *biz.AuthUsecase
 	conf   *conf.Server
 	logger *log.Helper
@@ -43,7 +42,7 @@ func (s *AuthService) Register(ctx context.Context, req *authv1.RegisterRequest)
 	}
 	u, err := s.uc.Register(ctx, req.Username, string(hash))
 	if err != nil {
-		if errors.Is(err, biz.ErrUserExists) {
+		if stderrors.Is(err, biz.ErrUserExists) {
 			return nil, errBadRequest("username already exists")
 		}
 		return nil, err
@@ -71,7 +70,7 @@ func (s *AuthService) Login(ctx context.Context, req *authv1.LoginRequest) (*aut
 
 	u, err := s.uc.Login(ctx, req.Username, req.Password)
 	if err != nil {
-		if errors.Is(err, biz.ErrUserNotFound) || errors.Is(err, biz.ErrBadPassword) {
+		if stderrors.Is(err, biz.ErrAuthUserNotFound) || stderrors.Is(err, biz.ErrBadPassword) {
 			return nil, errUnauthorized("invalid username or password")
 		}
 		return nil, err

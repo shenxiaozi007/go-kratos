@@ -15,7 +15,10 @@
           <el-button type="primary" :loading="loading" style="width: 100%" @click="onSubmit">登录</el-button>
         </el-form-item>
       </el-form>
-      <div class="tip">v2：需先注册或使用已有账号登录，登录后访问选品/内容/分发/获客模块</div>
+      <div class="tip">
+        v2：需先注册或使用已有账号登录
+        <el-button type="primary" link @click="$router.replace('/register')">去注册</el-button>
+      </div>
     </el-card>
   </div>
 </template>
@@ -25,7 +28,7 @@ import { login } from '../api/auth'
 import { TOKEN_KEY } from '../api/request'
 
 export default {
-  name: 'Login',
+  name: 'LoginPage',
   data() {
     return {
       form: { username: '', password: '' },
@@ -43,8 +46,14 @@ export default {
         this.loading = true
         try {
           const res = await login(this.form.username, this.form.password)
-          localStorage.setItem(TOKEN_KEY, res.access_token)
-          const expiresIn = res.expires_in || 86400
+          // 兼容后端 protojson 的 camelCase 与 snake_case
+          const token = res.access_token ?? res.accessToken
+          const expiresIn = res.expires_in ?? res.expiresIn ?? 86400
+          if (!token) {
+            this.$message.error('登录响应缺少 token')
+            return
+          }
+          localStorage.setItem(TOKEN_KEY, token)
           localStorage.setItem('xsh_expires_at', String(Date.now() + expiresIn * 1000))
           this.$message.success('登录成功')
           const redirect = this.$route.query.redirect || '/xsh/product/list'

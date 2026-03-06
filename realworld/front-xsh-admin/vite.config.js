@@ -19,7 +19,13 @@ export default defineConfig({
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8000',
-        changeOrigin: true
+        changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            const auth = req.headers.authorization || req.headers.Authorization
+            if (auth) proxyReq.setHeader('Authorization', auth)
+          })
+        }
       }
     }
   }

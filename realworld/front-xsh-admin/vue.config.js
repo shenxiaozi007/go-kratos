@@ -10,7 +10,12 @@ module.exports = defineConfig({
     proxy: {
       '/api': {
         target: 'http://127.0.0.1:8000',
-        changeOrigin: true
+        changeOrigin: true,
+        // 显式转发 Authorization 头（兼容大小写），否则代理可能不传递导致后端返回 401
+        onProxyReq(proxyReq, req) {
+          const auth = req.headers.authorization || req.headers.Authorization
+          if (auth) proxyReq.setHeader('Authorization', auth)
+        }
       }
     }
   }
