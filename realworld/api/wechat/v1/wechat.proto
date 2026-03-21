@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package wechat.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "realworld/api/wechat/v1;v1";
+
+message SendGroupTextRequest {
+  string room_id = 1;
+  string room_topic = 2;
+  string text = 3;
+}
+
+message SendGroupTextReply {
+  bool success = 1;
+  string message_id = 2;
+}
+
+message SendGroupImageRequest {
+  string room_id = 1;
+  string room_topic = 2;
+  string image_url = 3;
+  bytes image_bytes = 4;
+  string filename = 5;
+}
+
+message SendGroupImageReply {
+  bool success = 1;
+  string message_id = 2;
+}
+
+message SendGroupMentionTextRequest {
+  string room_id = 1;
+  string room_topic = 2;
+  repeated string mention_ids = 3;
+  string text = 4;
+}
+
+message SendGroupMentionTextReply {
+  bool success = 1;
+  string message_id = 2;
+}
+
+message GetLoginQrcodeReply {
+  string qrcode = 1;
+  string qrcode_data_url = 2;
+}
+
+message GetLoginStatusReply {
+  bool logged_in = 1;
+  string self_id = 2;
+  string self_name = 3;
+}
+
+service WechatService {
+  rpc SendGroupText(SendGroupTextRequest) returns (SendGroupTextReply) {
+    option (google.api.http) = {
+      post: "/api/wechat/v1/group/text"
+      body: "*"
+    };
+  }
+
+  rpc SendGroupImage(SendGroupImageRequest) returns (SendGroupImageReply) {
+    option (google.api.http) = {
+      post: "/api/wechat/v1/group/image"
+      body: "*"
+    };
+  }
+
+  rpc SendGroupMentionText(SendGroupMentionTextRequest) returns (SendGroupMentionTextReply) {
+    option (google.api.http) = {
+      post: "/api/wechat/v1/group/mention"
+      body: "*"
+    };
+  }
+
+  rpc GetLoginQrcode(google.protobuf.Empty) returns (GetLoginQrcodeReply) {
+    option (google.api.http) = {
+      get: "/api/wechat/v1/login/qrcode"
+    };
+  }
+
+  rpc GetLoginStatus(google.protobuf.Empty) returns (GetLoginStatusReply) {
+    option (google.api.http) = {
+      get: "/api/wechat/v1/login/status"
+    };
+  }
+}

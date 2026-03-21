@@ -1,0 +1,61 @@
+// 萌宠之家（cat-admin）成就模块 API 定义
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// 成就列表（含当前用户是否已解锁）、成就详情（描述、获得时间）
+
+syntax = "proto3";
+
+package achievement.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/achievement/v1;v1";
+
+// Achievement 成就基础信息
+message Achievement {
+  int64 id = 1 [json_name = "id"];
+  string code = 2 [json_name = "code"];
+  string name = 3 [json_name = "name"];
+  string description = 4 [json_name = "description"];
+  string icon_url = 5 [json_name = "icon_url"];
+  string condition_type = 6 [json_name = "condition_type"];
+  int32 condition_value = 7 [json_name = "condition_value"];
+}
+
+// AchievementItem 列表项：成就信息 + 是否已解锁及解锁时间
+message AchievementItem {
+  Achievement achievement = 1 [json_name = "achievement"];
+  bool unlocked = 2 [json_name = "unlocked"];
+  int64 unlocked_at = 3 [json_name = "unlocked_at"]; // Unix 秒，未解锁为 0
+}
+
+// ListAchievements 成就列表，需登录，返回含当前用户解锁状态
+message ListAchievementsRequest {}
+message ListAchievementsReply {
+  repeated AchievementItem items = 1 [json_name = "items"];
+}
+
+// GetAchievement 成就详情，含获得时间（已解锁时）
+message GetAchievementRequest {
+  int64 id = 1 [json_name = "id"];
+}
+message GetAchievementReply {
+  Achievement achievement = 1 [json_name = "achievement"];
+  bool unlocked = 2 [json_name = "unlocked"];
+  int64 unlocked_at = 3 [json_name = "unlocked_at"];
+}
+
+service AchievementService {
+  // GET /api/v1/achievements 成就列表（含是否已解锁）
+  rpc ListAchievements(ListAchievementsRequest) returns (ListAchievementsReply) {
+    option (google.api.http) = {
+      get: "/api/v1/achievements";
+    };
+  }
+
+  // GET /api/v1/achievements/{id} 成就详情（描述、获得时间）
+  rpc GetAchievement(GetAchievementRequest) returns (GetAchievementReply) {
+    option (google.api.http) = {
+      get: "/api/v1/achievements/{id}";
+    };
+  }
+}

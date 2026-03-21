@@ -1,0 +1,53 @@
+// 萌宠之家（cat-admin）背包模块 API 定义
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// 我的背包列表、使用道具（如喂食增加饱食度）
+
+syntax = "proto3";
+
+package inventory.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/inventory/v1;v1";
+
+// InventoryItem 背包中的一项：物品 ID、名称、数量等（可与商店商品信息合并展示）
+message InventoryItem {
+  int64 item_id = 1 [json_name = "item_id"];
+  string name = 2 [json_name = "name"];
+  string category = 3 [json_name = "category"];
+  int32 quantity = 4 [json_name = "quantity"];
+  string image_url = 5 [json_name = "image_url"];
+}
+
+// List 我的背包
+message ListRequest {}
+message ListReply {
+  repeated InventoryItem items = 1 [json_name = "items"];
+}
+
+// UseItem 使用道具，如喂食需传 pet_id
+message UseItemRequest {
+  int64 item_id = 1 [json_name = "item_id"];
+  int64 pet_id = 2 [json_name = "pet_id"]; // 可选，喂食等需指定宠物
+}
+message UseItemReply {
+  bool success = 1 [json_name = "success"];
+  string message = 2 [json_name = "message"];
+}
+
+service InventoryService {
+  // GET /api/v1/inventory 我的背包
+  rpc List(ListRequest) returns (ListReply) {
+    option (google.api.http) = {
+      get: "/api/v1/inventory";
+    };
+  }
+
+  // POST /api/v1/inventory/use 使用道具
+  rpc UseItem(UseItemRequest) returns (UseItemReply) {
+    option (google.api.http) = {
+      post: "/api/v1/inventory/use";
+      body: "*";
+    };
+  }
+}

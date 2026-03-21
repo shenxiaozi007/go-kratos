@@ -1,0 +1,166 @@
+// 萌宠之家（cat-admin）宠物模块 API 定义
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// 提供当前用户宠物的查询、创建、更新及互动接口，与 realworld 其他 API 并存。
+
+syntax = "proto3";
+
+package pet.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/pet/v1;v1";
+
+// Species 宠物种类枚举，用于领养与展示
+enum Species {
+  SPECIES_UNKNOWN = 0;
+  SPECIES_CAT = 1;  // 猫
+  SPECIES_DOG = 2;  // 狗
+}
+
+// InteractionAction 与宠物互动时的动作类型，对应前端工具栏（抚摸/逗猫棒/零食/洗澡）
+enum InteractionAction {
+  INTERACTION_ACTION_UNKNOWN = 0;
+  INTERACTION_ACTION_STROKE = 1;   // 抚摸
+  INTERACTION_ACTION_TEASE = 2;    // 逗猫棒/逗狗
+  INTERACTION_ACTION_TREAT = 3;    // 零食
+  INTERACTION_ACTION_BATH = 4;     // 洗澡
+}
+
+// Pet 宠物信息及成长数据，与数据库 pets 表、docs-all/cat-admin/database/schema.md 一致
+message Pet {
+  int64 id = 1;
+  uint64 user_id = 2 [json_name = "user_id"];  // 所属用户 ID
+  string name = 3;
+  Species species = 4;
+  int64 breed_id = 5 [json_name = "breed_id"];  // 可选，关联品种
+  string avatar_url = 6 [json_name = "avatar_url"];
+  string background_url = 7 [json_name = "background_url"];
+  string mood = 8;           // 心情文案，如「非常开心」
+  int32 affection = 9;        // 亲密度 0-1000（与原型一致）
+  int32 fullness = 10;        // 饱食度 0-100
+  int32 happiness = 11;       // 心情值 0-100
+  int32 cleanliness = 12;     // 清洁度 0-100
+}
+
+// GetMyPet 获取当前登录用户的主宠物（列表首只），无则 404
+message GetMyPetRequest {}
+message GetMyPetReply {
+  Pet pet = 1;
+}
+
+// ListPets 获取当前用户的宠物列表，多宠场景使用
+message ListPetsRequest {}
+message ListPetsReply {
+  repeated Pet pets = 1;
+}
+
+// CreatePet 创建/领养宠物，Body 来自前端领养或设置页
+message CreatePetRequest {
+  string name = 1;
+  Species species = 2;
+  int64 breed_id = 3 [json_name = "breed_id"];
+  string avatar_url = 4 [json_name = "avatar_url"];
+  string background_url = 5 [json_name = "background_url"];
+}
+message CreatePetReply {
+  Pet pet = 1;
+}
+
+// UpdatePet 更新宠物基础信息（名称、种类、头像、背景图等）
+message UpdatePetRequest {
+  int64 id = 1;
+  string name = 2;
+  Species species = 3;
+  string avatar_url = 4 [json_name = "avatar_url"];
+  string background_url = 5 [json_name = "background_url"];
+}
+message UpdatePetReply {
+  Pet pet = 1;
+}
+
+// Interact 与宠物互动，根据 action 增加亲密度并可能更新心情等成长数据
+message InteractRequest {
+  InteractionAction action = 1;
+}
+message InteractReply {
+  Pet pet = 1;  // 返回更新后的宠物状态
+}
+
+// GetPetAppearance 获取指定宠物的当前装扮（头/身/颈 slot -> item_id）
+message GetPetAppearanceRequest {
+  int64 id = 1 [json_name = "id"];  // 宠物 ID，path 绑定
+}
+message GetPetAppearanceReply {
+  int64 head_item_id = 1 [json_name = "head_item_id"];
+  int64 body_item_id = 2 [json_name = "body_item_id"];
+  int64 neck_item_id = 3 [json_name = "neck_item_id"];
+}
+
+// UpdatePetAppearance 保存装扮搭配，Body 中 0 表示该槽位不装备
+message UpdatePetAppearanceRequest {
+  int64 id = 1 [json_name = "id"];              // 宠物 ID，path 绑定
+  int64 head_item_id = 2 [json_name = "head_item_id"];
+  int64 body_item_id = 3 [json_name = "body_item_id"];
+  int64 neck_item_id = 4 [json_name = "neck_item_id"];
+}
+message UpdatePetAppearanceReply {
+  int64 head_item_id = 1 [json_name = "head_item_id"];
+  int64 body_item_id = 2 [json_name = "body_item_id"];
+  int64 neck_item_id = 3 [json_name = "neck_item_id"];
+}
+
+// PetService 萌宠之家宠物 HTTP 服务，路径前缀 /api/v1/pet，需 JWT 鉴权
+service PetService {
+  // GetMyPet 获取当前用户主宠物，GET /api/v1/pet/me
+  rpc GetMyPet(GetMyPetRequest) returns (GetMyPetReply) {
+    option (google.api.http) = {
+      get: "/api/v1/pet/me";
+    };
+  }
+
+  // ListPets 当前用户宠物列表，GET /api/v1/pet/list
+  rpc ListPets(ListPetsRequest) returns (ListPetsReply) {
+    option (google.api.http) = {
+      get: "/api/v1/pet/list";
+    };
+  }
+
+  // CreatePet 创建/领养宠物，POST /api/v1/pet
+  rpc CreatePet(CreatePetRequest) returns (CreatePetReply) {
+    option (google.api.http) = {
+      post: "/api/v1/pet";
+      body: "*";
+    };
+  }
+
+  // UpdatePet 更新宠物基础信息，PUT /api/v1/pet/{id}
+  rpc UpdatePet(UpdatePetRequest) returns (UpdatePetReply) {
+    option (google.api.http) = {
+      put: "/api/v1/pet/{id}";
+      body: "*";
+    };
+  }
+
+  // Interact 与宠物互动，POST /api/v1/pet/interact
+  rpc Interact(InteractRequest) returns (InteractReply) {
+    option (google.api.http) = {
+      post: "/api/v1/pet/interact";
+      body: "*";
+    };
+  }
+
+  // GetPetAppearance 当前装扮，GET /api/v1/pet/{id}/appearance
+  rpc GetPetAppearance(GetPetAppearanceRequest) returns (GetPetAppearanceReply) {
+    option (google.api.http) = {
+      get: "/api/v1/pet/{id}/appearance";
+    };
+  }
+
+  // UpdatePetAppearance 保存装扮，PUT /api/v1/pet/{id}/appearance
+  rpc UpdatePetAppearance(UpdatePetAppearanceRequest) returns (UpdatePetAppearanceReply) {
+    option (google.api.http) = {
+      put: "/api/v1/pet/{id}/appearance";
+      body: "*";
+    };
+  }
+}

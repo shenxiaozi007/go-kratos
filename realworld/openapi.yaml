@@ -539,6 +539,38 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/realworld.v1.UserReply'
+    /api/v1/achievements:
+        get:
+            tags:
+                - AchievementService
+            description: GET /api/v1/achievements 成就列表（含是否已解锁）
+            operationId: AchievementService_ListAchievements
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/achievement.v1.ListAchievementsReply'
+    /api/v1/achievements/{id}:
+        get:
+            tags:
+                - AchievementService
+            description: GET /api/v1/achievements/{id} 成就详情（描述、获得时间）
+            operationId: AchievementService_GetAchievement
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/achievement.v1.GetAchievementReply'
     /api/v1/auth/login:
         post:
             tags:
@@ -614,6 +646,188 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/auth.v1.RegisterReply'
+    /api/v1/breeds:
+        get:
+            tags:
+                - BreedService
+            description: 'GET /api/v1/breeds 品种列表，query: species 可选'
+            operationId: BreedService_ListBreeds
+            parameters:
+                - name: species
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/breed.v1.ListBreedsReply'
+    /api/v1/breeds/{id}:
+        get:
+            tags:
+                - BreedService
+            description: GET /api/v1/breeds/{id} 品种详情
+            operationId: BreedService_GetBreed
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/breed.v1.GetBreedReply'
+    /api/v1/checkin:
+        post:
+            tags:
+                - CheckinService
+            description: POST /api/v1/checkin 每日签到
+            operationId: CheckinService_DoCheckin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/checkin.v1.DoCheckinRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/checkin.v1.DoCheckinReply'
+    /api/v1/checkin/status:
+        get:
+            tags:
+                - CheckinService
+            description: GET /api/v1/checkin/status 签到状态与 7 日日历
+            operationId: CheckinService_GetCheckinStatus
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/checkin.v1.GetCheckinStatusReply'
+    /api/v1/friends:
+        get:
+            tags:
+                - FriendService
+            description: GET /api/v1/friends 我的好友列表
+            operationId: FriendService_ListFriends
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/friend.v1.ListFriendsReply'
+    /api/v1/friends/request:
+        post:
+            tags:
+                - FriendService
+            description: POST /api/v1/friends/request 发送好友申请
+            operationId: FriendService_SendFriendRequest
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/friend.v1.SendFriendRequestRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/friend.v1.SendFriendRequestReply'
+    /api/v1/friends/requests:
+        get:
+            tags:
+                - FriendService
+            description: GET /api/v1/friends/requests 收到的好友申请列表
+            operationId: FriendService_ListFriendRequests
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/friend.v1.ListFriendRequestsReply'
+    /api/v1/friends/requests/{id}/accept:
+        post:
+            tags:
+                - FriendService
+            description: 'POST /api/v1/friends/requests/{id}/accept 同意申请，path: id 为申请 ID'
+            operationId: FriendService_AcceptFriendRequest
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/friend.v1.AcceptFriendRequestRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/friend.v1.AcceptFriendRequestReply'
+    /api/v1/friends/requests/{id}/reject:
+        post:
+            tags:
+                - FriendService
+            description: POST /api/v1/friends/requests/{id}/reject 拒绝申请
+            operationId: FriendService_RejectFriendRequest
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/friend.v1.RejectFriendRequestRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/friend.v1.RejectFriendRequestReply'
+    /api/v1/friends/search:
+        get:
+            tags:
+                - FriendService
+            description: GET /api/v1/friends/search 搜索用户
+            operationId: FriendService_SearchUsers
+            parameters:
+                - name: keyword
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/friend.v1.SearchUsersReply'
     /api/v1/game/config/tank:
         get:
             tags:
@@ -736,6 +950,230 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/game.v1.FinishSessionReply'
+    /api/v1/inventory:
+        get:
+            tags:
+                - InventoryService
+            description: GET /api/v1/inventory 我的背包
+            operationId: InventoryService_List
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/inventory.v1.ListReply'
+    /api/v1/inventory/use:
+        post:
+            tags:
+                - InventoryService
+            description: POST /api/v1/inventory/use 使用道具
+            operationId: InventoryService_UseItem
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/inventory.v1.UseItemRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/inventory.v1.UseItemReply'
+    /api/v1/pet:
+        post:
+            tags:
+                - PetService
+            description: CreatePet 创建/领养宠物，POST /api/v1/pet
+            operationId: PetService_CreatePet
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/pet.v1.CreatePetRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/pet.v1.CreatePetReply'
+    /api/v1/pet/interact:
+        post:
+            tags:
+                - PetService
+            description: Interact 与宠物互动，POST /api/v1/pet/interact
+            operationId: PetService_Interact
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/pet.v1.InteractRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/pet.v1.InteractReply'
+    /api/v1/pet/list:
+        get:
+            tags:
+                - PetService
+            description: ListPets 当前用户宠物列表，GET /api/v1/pet/list
+            operationId: PetService_ListPets
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/pet.v1.ListPetsReply'
+    /api/v1/pet/me:
+        get:
+            tags:
+                - PetService
+            description: GetMyPet 获取当前用户主宠物，GET /api/v1/pet/me
+            operationId: PetService_GetMyPet
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/pet.v1.GetMyPetReply'
+    /api/v1/pet/{id}:
+        put:
+            tags:
+                - PetService
+            description: UpdatePet 更新宠物基础信息，PUT /api/v1/pet/{id}
+            operationId: PetService_UpdatePet
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/pet.v1.UpdatePetRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/pet.v1.UpdatePetReply'
+    /api/v1/pet/{id}/appearance:
+        get:
+            tags:
+                - PetService
+            description: GetPetAppearance 当前装扮，GET /api/v1/pet/{id}/appearance
+            operationId: PetService_GetPetAppearance
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/pet.v1.GetPetAppearanceReply'
+        put:
+            tags:
+                - PetService
+            description: UpdatePetAppearance 保存装扮，PUT /api/v1/pet/{id}/appearance
+            operationId: PetService_UpdatePetAppearance
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/pet.v1.UpdatePetAppearanceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/pet.v1.UpdatePetAppearanceReply'
+    /api/v1/ranking:
+        get:
+            tags:
+                - FriendService
+            description: GET /api/v1/ranking 排行榜
+            operationId: FriendService_GetRanking
+            parameters:
+                - name: type
+                  in: query
+                  schema:
+                    type: string
+                - name: limit
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/friend.v1.GetRankingReply'
+    /api/v1/shop/buy:
+        post:
+            tags:
+                - ShopService
+            description: POST /api/v1/shop/buy 购买
+            operationId: ShopService_Buy
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/shop.v1.BuyRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/shop.v1.BuyReply'
+    /api/v1/shop/items:
+        get:
+            tags:
+                - ShopService
+            description: 'GET /api/v1/shop/items 商品列表，query: category 可选'
+            operationId: ShopService_ListItems
+            parameters:
+                - name: category
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/shop.v1.ListItemsReply'
     /api/v1/stats/leaderboard:
         get:
             tags:
@@ -787,6 +1225,115 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/stats.v1.ListMatchesReply'
+    /api/v1/user/profile:
+        get:
+            tags:
+                - UserService
+            description: GET /api/v1/user/profile
+            operationId: UserService_GetProfile
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/user.v1.GetProfileReply'
+        put:
+            tags:
+                - UserService
+            description: PUT /api/v1/user/profile
+            operationId: UserService_UpdateProfile
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/user.v1.UpdateProfileRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/user.v1.UpdateProfileReply'
+    /api/wechat/v1/group/image:
+        post:
+            tags:
+                - WechatService
+            operationId: WechatService_SendGroupImage
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/wechat.v1.SendGroupImageRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wechat.v1.SendGroupImageReply'
+    /api/wechat/v1/group/mention:
+        post:
+            tags:
+                - WechatService
+            operationId: WechatService_SendGroupMentionText
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/wechat.v1.SendGroupMentionTextRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wechat.v1.SendGroupMentionTextReply'
+    /api/wechat/v1/group/text:
+        post:
+            tags:
+                - WechatService
+            operationId: WechatService_SendGroupText
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/wechat.v1.SendGroupTextRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wechat.v1.SendGroupTextReply'
+    /api/wechat/v1/login/qrcode:
+        get:
+            tags:
+                - WechatService
+            operationId: WechatService_GetLoginQrcode
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wechat.v1.GetLoginQrcodeReply'
+    /api/wechat/v1/login/status:
+        get:
+            tags:
+                - WechatService
+            operationId: WechatService_GetLoginStatus
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/wechat.v1.GetLoginStatusReply'
     /api/xsh/v1/accounts:
         get:
             tags:
@@ -1614,6 +2161,51 @@ paths:
                                 $ref: '#/components/schemas/xsh.v1.DeleteTemplateReply'
 components:
     schemas:
+        achievement.v1.Achievement:
+            type: object
+            properties:
+                id:
+                    type: string
+                code:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                icon_url:
+                    type: string
+                condition_type:
+                    type: string
+                condition_value:
+                    type: integer
+                    format: int32
+            description: Achievement 成就基础信息
+        achievement.v1.AchievementItem:
+            type: object
+            properties:
+                achievement:
+                    $ref: '#/components/schemas/achievement.v1.Achievement'
+                unlocked:
+                    type: boolean
+                unlocked_at:
+                    type: string
+            description: AchievementItem 列表项：成就信息 + 是否已解锁及解锁时间
+        achievement.v1.GetAchievementReply:
+            type: object
+            properties:
+                achievement:
+                    $ref: '#/components/schemas/achievement.v1.Achievement'
+                unlocked:
+                    type: boolean
+                unlocked_at:
+                    type: string
+        achievement.v1.ListAchievementsReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/achievement.v1.AchievementItem'
         api.blog.v1.ArticleReply:
             type: object
             properties:
@@ -1707,6 +2299,169 @@ components:
                     type: string
                 password:
                     type: string
+        breed.v1.Breed:
+            type: object
+            properties:
+                id:
+                    type: string
+                species:
+                    type: string
+                name_cn:
+                    type: string
+                name_en:
+                    type: string
+                size_tag:
+                    type: string
+                life_span:
+                    type: string
+                image_url:
+                    type: string
+            description: Breed 品种信息
+        breed.v1.GetBreedReply:
+            type: object
+            properties:
+                breed:
+                    $ref: '#/components/schemas/breed.v1.Breed'
+        breed.v1.ListBreedsReply:
+            type: object
+            properties:
+                breeds:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/breed.v1.Breed'
+        checkin.v1.DoCheckinReply:
+            type: object
+            properties:
+                already_checked_today:
+                    type: boolean
+                continuous_days:
+                    type: integer
+                    format: int32
+                coins_reward:
+                    type: integer
+                    format: int32
+                heart_reward:
+                    type: integer
+                    format: int32
+        checkin.v1.DoCheckinRequest:
+            type: object
+            properties: {}
+            description: DoCheckin 执行每日签到，返回今日是否已签、连续天数、奖励
+        checkin.v1.GetCheckinStatusReply:
+            type: object
+            properties:
+                checked_today:
+                    type: boolean
+                continuous_days:
+                    type: integer
+                    format: int32
+                last_7_days:
+                    type: array
+                    items:
+                        type: boolean
+        friend.v1.AcceptFriendRequestReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+        friend.v1.AcceptFriendRequestRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+            description: 'AcceptFriendRequest 同意申请，path: id 为申请 ID'
+        friend.v1.FriendRequestItem:
+            type: object
+            properties:
+                id:
+                    type: string
+                from_user_id:
+                    type: string
+                from_user:
+                    $ref: '#/components/schemas/friend.v1.UserBrief'
+                message:
+                    type: string
+                status:
+                    type: string
+                created_at:
+                    type: string
+            description: FriendRequestItem 收到的好友申请项
+        friend.v1.GetRankingReply:
+            type: object
+            properties:
+                ranking:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/friend.v1.UserBrief'
+        friend.v1.ListFriendRequestsReply:
+            type: object
+            properties:
+                requests:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/friend.v1.FriendRequestItem'
+        friend.v1.ListFriendsReply:
+            type: object
+            properties:
+                friends:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/friend.v1.UserBrief'
+        friend.v1.RejectFriendRequestReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+        friend.v1.RejectFriendRequestRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+            description: RejectFriendRequest 拒绝申请
+        friend.v1.SearchUsersReply:
+            type: object
+            properties:
+                users:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/friend.v1.UserBrief'
+        friend.v1.SendFriendRequestReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+        friend.v1.SendFriendRequestRequest:
+            type: object
+            properties:
+                to_user_id:
+                    type: string
+                message:
+                    type: string
+            description: SendFriendRequest 发送好友申请
+        friend.v1.UserBrief:
+            type: object
+            properties:
+                id:
+                    type: string
+                username:
+                    type: string
+                nickname:
+                    type: string
+                avatar_url:
+                    type: string
+                level:
+                    type: integer
+                    format: int32
+                heart_points:
+                    type: integer
+                    format: int32
+            description: UserBrief 用户简要信息（搜索、好友列表、排行榜共用）
         game.v1.CreateSessionReply:
             type: object
             properties:
@@ -1852,6 +2607,170 @@ components:
                 enemy:
                     $ref: '#/components/schemas/game.v1.TankConfig'
             description: 玩家/敌方坦克属性集合。
+        inventory.v1.InventoryItem:
+            type: object
+            properties:
+                item_id:
+                    type: string
+                name:
+                    type: string
+                category:
+                    type: string
+                quantity:
+                    type: integer
+                    format: int32
+                image_url:
+                    type: string
+            description: InventoryItem 背包中的一项：物品 ID、名称、数量等（可与商店商品信息合并展示）
+        inventory.v1.ListReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/inventory.v1.InventoryItem'
+        inventory.v1.UseItemReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+        inventory.v1.UseItemRequest:
+            type: object
+            properties:
+                item_id:
+                    type: string
+                pet_id:
+                    type: string
+            description: UseItem 使用道具，如喂食需传 pet_id
+        pet.v1.CreatePetReply:
+            type: object
+            properties:
+                pet:
+                    $ref: '#/components/schemas/pet.v1.Pet'
+        pet.v1.CreatePetRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                species:
+                    type: integer
+                    format: enum
+                breed_id:
+                    type: string
+                avatar_url:
+                    type: string
+                background_url:
+                    type: string
+            description: CreatePet 创建/领养宠物，Body 来自前端领养或设置页
+        pet.v1.GetMyPetReply:
+            type: object
+            properties:
+                pet:
+                    $ref: '#/components/schemas/pet.v1.Pet'
+        pet.v1.GetPetAppearanceReply:
+            type: object
+            properties:
+                head_item_id:
+                    type: string
+                body_item_id:
+                    type: string
+                neck_item_id:
+                    type: string
+        pet.v1.InteractReply:
+            type: object
+            properties:
+                pet:
+                    $ref: '#/components/schemas/pet.v1.Pet'
+        pet.v1.InteractRequest:
+            type: object
+            properties:
+                action:
+                    type: integer
+                    format: enum
+            description: Interact 与宠物互动，根据 action 增加亲密度并可能更新心情等成长数据
+        pet.v1.ListPetsReply:
+            type: object
+            properties:
+                pets:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/pet.v1.Pet'
+        pet.v1.Pet:
+            type: object
+            properties:
+                id:
+                    type: string
+                user_id:
+                    type: string
+                name:
+                    type: string
+                species:
+                    type: integer
+                    format: enum
+                breed_id:
+                    type: string
+                avatar_url:
+                    type: string
+                background_url:
+                    type: string
+                mood:
+                    type: string
+                affection:
+                    type: integer
+                    format: int32
+                fullness:
+                    type: integer
+                    format: int32
+                happiness:
+                    type: integer
+                    format: int32
+                cleanliness:
+                    type: integer
+                    format: int32
+            description: Pet 宠物信息及成长数据，与数据库 pets 表、docs-all/cat-admin/database/schema.md 一致
+        pet.v1.UpdatePetAppearanceReply:
+            type: object
+            properties:
+                head_item_id:
+                    type: string
+                body_item_id:
+                    type: string
+                neck_item_id:
+                    type: string
+        pet.v1.UpdatePetAppearanceRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                head_item_id:
+                    type: string
+                body_item_id:
+                    type: string
+                neck_item_id:
+                    type: string
+            description: UpdatePetAppearance 保存装扮搭配，Body 中 0 表示该槽位不装备
+        pet.v1.UpdatePetReply:
+            type: object
+            properties:
+                pet:
+                    $ref: '#/components/schemas/pet.v1.Pet'
+        pet.v1.UpdatePetRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                species:
+                    type: integer
+                    format: enum
+                avatar_url:
+                    type: string
+                background_url:
+                    type: string
+            description: UpdatePet 更新宠物基础信息（名称、种类、头像、背景图等）
         realworld.v1.AddCommentRequest:
             type: object
             properties:
@@ -2068,6 +2987,46 @@ components:
                     type: string
                 image:
                     type: string
+        shop.v1.BuyReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+        shop.v1.BuyRequest:
+            type: object
+            properties:
+                item_id:
+                    type: string
+                quantity:
+                    type: integer
+                    format: int32
+            description: Buy 购买：扣用户金币，将商品写入背包
+        shop.v1.ListItemsReply:
+            type: object
+            properties:
+                items:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/shop.v1.ShopItem'
+        shop.v1.ShopItem:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                category:
+                    type: string
+                price_coins:
+                    type: integer
+                    format: int32
+                image_url:
+                    type: string
+                description:
+                    type: string
+            description: ShopItem 商品信息，用于列表与购买结果
         stats.v1.GetLeaderboardReply:
             type: object
             properties:
@@ -2202,6 +3161,116 @@ components:
                     type: string
                     description: 待办事项 ID。
             description: UpdateTodoRequest 用于根据 id 更新待办事项状态（取反）。
+        user.v1.GetProfileReply:
+            type: object
+            properties:
+                user_id:
+                    type: string
+                username:
+                    type: string
+                nickname:
+                    type: string
+                avatar_url:
+                    type: string
+                signature:
+                    type: string
+                level:
+                    type: integer
+                    format: int32
+                coins:
+                    type: integer
+                    format: int32
+                heart_points:
+                    type: integer
+                    format: int32
+        user.v1.UpdateProfileReply:
+            type: object
+            properties:
+                profile:
+                    $ref: '#/components/schemas/user.v1.GetProfileReply'
+        user.v1.UpdateProfileRequest:
+            type: object
+            properties:
+                nickname:
+                    type: string
+                avatar_url:
+                    type: string
+                signature:
+                    type: string
+            description: UpdateProfile 更新昵称、头像、个性签名
+        wechat.v1.GetLoginQrcodeReply:
+            type: object
+            properties:
+                qrcode:
+                    type: string
+                qrcodeDataUrl:
+                    type: string
+        wechat.v1.GetLoginStatusReply:
+            type: object
+            properties:
+                loggedIn:
+                    type: boolean
+                selfId:
+                    type: string
+                selfName:
+                    type: string
+        wechat.v1.SendGroupImageReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                messageId:
+                    type: string
+        wechat.v1.SendGroupImageRequest:
+            type: object
+            properties:
+                roomId:
+                    type: string
+                roomTopic:
+                    type: string
+                imageUrl:
+                    type: string
+                imageBytes:
+                    type: string
+                    format: bytes
+                filename:
+                    type: string
+        wechat.v1.SendGroupMentionTextReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                messageId:
+                    type: string
+        wechat.v1.SendGroupMentionTextRequest:
+            type: object
+            properties:
+                roomId:
+                    type: string
+                roomTopic:
+                    type: string
+                mentionIds:
+                    type: array
+                    items:
+                        type: string
+                text:
+                    type: string
+        wechat.v1.SendGroupTextReply:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                messageId:
+                    type: string
+        wechat.v1.SendGroupTextRequest:
+            type: object
+            properties:
+                roomId:
+                    type: string
+                roomTopic:
+                    type: string
+                text:
+                    type: string
         xsh.v1.BindAccountReply:
             type: object
             properties:
@@ -2855,21 +3924,31 @@ components:
                     type: integer
                     format: int32
 tags:
+    - name: AchievementService
     - name: Article
     - name: AuthService
       description: 简单账号体系（可选）：注册、登录、获取当前用户信息。
+    - name: BreedService
+    - name: CheckinService
     - name: ContentService
       description: ContentService AI 内容加工坊 HTTP/gRPC 服务。
     - name: DispatchService
       description: DispatchService 多账号分发矩阵 HTTP/gRPC 服务。
+    - name: FriendService
     - name: GameService
       description: 游戏配置与对局管理相关接口。
     - name: InboxService
       description: InboxService 获客截流 HTTP/gRPC 服务。
+    - name: InventoryService
+    - name: PetService
+      description: PetService 萌宠之家宠物 HTTP 服务，路径前缀 /api/v1/pet，需 JWT 鉴权
     - name: ProductService
       description: ProductService 选品采集仓 HTTP/gRPC 服务。
     - name: Realworld
+    - name: ShopService
     - name: StatsService
       description: 战绩查询与排行榜接口。
     - name: TodoService
       description: Todo 服务定义，包含 4 个 RPC 方法，分别对应 4 个 RESTful API。
+    - name: UserService
+    - name: WechatService

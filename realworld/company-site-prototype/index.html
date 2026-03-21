@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="用产品与匠心，连接人与未来。我们专注于值得长期投入的领域，为客户与伙伴创造价值。" />
+  <meta property="og:title" content="公司官网" />
+  <meta property="og:description" content="用产品与匠心，连接人与未来。" />
+  <meta property="og:type" content="website" />
+  <title>公司官网</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --text: #e8e6e3;
+      --text-muted: #9a9691;
+      --accent: #c9a227;
+      --accent-dim: rgba(201, 162, 39, 0.15);
+      --serif: 'Cormorant Garamond', 'Noto Serif SC', serif;
+      --sans: 'Outfit', 'PingFang SC', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      font-weight: 400;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: 1000;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 1.25rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, var(--bg) 0%, transparent 100%);
+      transition: background 0.3s ease;
+    }
+    header.scrolled { background: rgba(13, 13, 13, 0.92); backdrop-filter: blur(12px); }
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--text);
+    }
+    nav {
+      display: flex;
+      gap: 2rem;
+    }
+    nav a {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s ease;
+    }
+    nav a:hover { color: var(--accent); }
+
+    main { position: relative; z-index: 1; }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem 2rem;
+      max-width: 72rem;
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding-top: 6rem;
+    }
+    .hero .tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 600;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.35s forwards;
+    }
+    .hero .lead {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 28em;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 0.5s forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(1.75rem, 3vw, 2.25rem);
+      font-weight: 600;
+      margin-bottom: 2rem;
+    }
+    .section-body {
+      color: var(--text-muted);
+      max-width: 40rem;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .feature {
+      padding: 1.5rem;
+      background: var(--accent-dim);
+      border: 1px solid rgba(201, 162, 39, 0.2);
+      border-radius: 4px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .feature:hover {
+      border-color: rgba(201, 162, 39, 0.4);
+      transform: translateY(-2px);
+    }
+    .feature h3 {
+      font-family: var(--serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .feature p { font-size: 0.9rem; }
+
+    .cta {
+      text-align: center;
+      padding: 6rem 2rem;
+    }
+    .cta .section-title { margin-bottom: 1rem; }
+    .cta .section-body { margin: 0 auto 2rem; }
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      color: var(--bg);
+      background: var(--accent);
+      border: none;
+      border-radius: 2px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    .btn:hover { background: #d4af37; color: var(--bg); }
+
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      max-width: 24rem;
+      margin: 0 auto;
+      display: block;
+      padding: 0.65rem 0.85rem;
+      font-family: var(--sans);
+      font-size: 0.95rem;
+      background: var(--surface);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 2px;
+      color: var(--text);
+      transition: border-color 0.2s ease;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .form-group textarea { min-height: 5rem; resize: vertical; }
+    .form-actions { margin-top: 1.5rem; }
+
+    footer {
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    @media (max-width: 640px) {
+      nav { gap: 1.25rem; }
+      section { padding: 3rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header id="header">
+    <div class="logo">公司品牌</div>
+    <nav>
+      <a href="#product">产品</a>
+      <a href="#about">关于</a>
+      <a href="#contact">联系</a>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="tag">欢迎访问</div>
+      <h1>用产品与匠心，<br />连接人与未来。</h1>
+      <p class="lead">我们专注于值得长期投入的领域，以清晰的目标与可持续的方式，为客户与伙伴创造价值。</p>
+    </section>
+    <section id="product">
+      <div class="section-label">产品与服务</div>
+      <h2 class="section-title">我们做什么</h2>
+      <p class="section-body">从概念到落地，我们提供完整的产品与技术支持，帮助企业在数字化与智能化中保持领先。</p>
+      <div class="features">
+        <div class="feature">
+          <h3>产品设计</h3>
+          <p>用户研究与体验设计，让产品既好用又好看。</p>
+        </div>
+        <div class="feature">
+          <h3>技术实现</h3>
+          <p>稳健的架构与工程实践，支撑业务长期演进。</p>
+        </div>
+        <div class="feature">
+          <h3>持续运营</h3>
+          <p>数据驱动迭代与运营，让产品持续创造价值。</p>
+        </div>
+      </div>
+    </section>
+    <section id="about">
+      <div class="section-label">关于我们</div>
+      <h2 class="section-title">团队与理念</h2>
+      <p class="section-body">我们是一支小而精的团队，相信专注与长期主义。我们与客户共同成长，用专业与诚意交付每一份承诺。</p>
+    </section>
+    <section class="cta" id="contact">
+      <div class="section-label">联系我们</div>
+      <h2 class="section-title">一起做点有意思的事</h2>
+      <p class="section-body">如有合作或咨询需求，欢迎填写表单或发送邮件。我们会在 1–2 个工作日内回复。</p>
+      <form class="contact-form" id="contactForm" style="margin-top:1.5rem;">
+        <div class="form-group">
+          <label for="name">姓名</label>
+          <input type="text" id="name" placeholder="您的姓名" />
+        </div>
+        <div class="form-group">
+          <label for="email">邮箱</label>
+          <input type="email" id="email" placeholder="your@email.com" required />
+        </div>
+        <div class="form-group">
+          <label for="msg">留言</label>
+          <textarea id="msg" placeholder="简要说明您的需求" rows="4"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn" id="contactSubmitBtn">发送</button>
+        </div>
+        <p id="contactFeedback" style="margin-top:0.75rem;font-size:0.9rem;display:none;"></p>
+      </form>
+      <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted);">或直接 <a href="mailto:hello@company.com" style="color:var(--accent);">hello@company.com</a></p>
+    </section>
+  </main>
+  <footer>
+    <p>© 2025 公司品牌。保留所有权利。</p>
+  </footer>
+  <script>
+    (function() {
+      var h = document.getElementById('header');
+      function onScroll() {
+        h.classList.toggle('scrolled', window.scrollY > 40);
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+    (function() {
+      var form = document.getElementById('contactForm');
+      var feedback = document.getElementById('contactFeedback');
+      var btn = document.getElementById('contactSubmitBtn');
+      if (!form) return;
+      function showFeedback(text, isError) {
+        if (!feedback) return;
+        feedback.textContent = text;
+        feedback.style.display = 'block';
+        feedback.style.color = isError ? 'var(--accent)' : 'var(--text)';
+      }
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        var name = (document.getElementById('name') && document.getElementById('name').value) || '';
+        var email = (document.getElementById('email') && document.getElementById('email').value) || '';
+        var msg = (document.getElementById('msg') && document.getElementById('msg').value) || '';
+        if (!email) { showFeedback('请填写邮箱。', true); return; }
+        if (btn) btn.disabled = true;
+        fetch('/api/company/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, email: email, message: msg })
+        }).then(function(res) {
+          if (res.ok) {
+            showFeedback('已提交，我们会在 1–2 个工作日内回复。');
+            form.reset();
+          } else {
+            return res.json().then(function(d) { showFeedback(d.error || '提交失败，请稍后重试。', true); });
+          }
+        }).catch(function() {
+          showFeedback('网络错误，请检查后端服务或稍后重试。', true);
+        }).finally(function() {
+          if (btn) btn.disabled = false;
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

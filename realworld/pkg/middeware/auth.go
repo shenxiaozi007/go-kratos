@@ -16,8 +16,10 @@ import (
 
 // 需要跳过 JWT 校验的路径（小写，无尾斜杠）；用于登录、注册等公开接口。
 var skipAuthPaths = map[string]bool{
-	"/api/v1/auth/login":    true,
-	"/api/v1/auth/register": true,
+	"/api/v1/auth/login":                true,
+	"/api/v1/auth/register":             true,
+	"/api/company/contact":              true, // 官网联系表单，无需登录
+	"/api/wechat/v1/group/image/upload": true, // wechat 图片 multipart 上传
 }
 
 // JWTAuth 返回 JWT 鉴权中间件。secret 为空时不校验（放行所有请求，用于未配置鉴权时兼容）。
@@ -36,7 +38,7 @@ func JWTAuth(secret string) middleware.Middleware {
 				if len(path) > 0 && path[len(path)-1] == '/' {
 					path = path[:len(path)-1]
 				}
-				if skipAuthPaths[path] {
+				if skipAuthPaths[path] || strings.HasPrefix(path, "/api/wechat/v1/") {
 					return handler(ctx, req)
 				}
 			}

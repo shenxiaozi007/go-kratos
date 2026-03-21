@@ -22,4 +22,24 @@ var ProviderSet = wire.NewSet(
 	NewXshDispatchUsecase,
 	// xsh 获客截流
 	NewXshInboxUsecase,
+	// wechat 群发与登录
+	NewWechatUsecase,
+	// 萌宠之家（cat-admin）宠物
+	NewPetUsecase,
+	// 萌宠之家（cat-admin）签到
+	NewCheckinUsecase,
+	// 萌宠之家（cat-admin）用户资料
+	NewUserUsecase,
+	// 萌宠之家（cat-admin）商店与背包
+	NewShopUsecase,
+	NewInventoryUsecase,
+	// 萌宠之家（cat-admin）品种
+	NewBreedUsecase,
+	// 萌宠之家（cat-admin）宠物装扮
+	NewAppearanceUsecase,
+	// 萌宠之家（cat-admin）成就与解锁器（签到/领养/购买触发）
+	NewAchievementUsecase,
+	NewAchievementUnlocker,
+	// 萌宠之家（cat-admin）社交
+	NewFriendUsecase,
 )

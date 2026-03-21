@@ -18,19 +18,33 @@ var (
 )
 
 // User 鉴权用用户实体（与 data.UserPO 解耦，避免 biz 依赖 data）。
+// 萌宠之家扩展：Nickname、AvatarURL、Signature、Level、Coins、HeartPoints 用于个人资料与签到奖励。
 type User struct {
 	ID           uint64
 	Username     string
 	PasswordHash string
 	Role         string
+	Nickname     string
+	AvatarURL    string
+	Signature    string
+	Level        int32
+	Coins        int32
+	HeartPoints  int32
 }
 
 // UserRepo 用户仓储接口，由 data 层实现。
+// 萌宠之家：UpdateProfile 更新资料；AddCoinsAndHeart 增加金币/爱心（如签到奖励）。
 type UserRepo interface {
 	GetByUsername(ctx context.Context, username string) (*User, error)
 	GetByID(ctx context.Context, id uint64) (*User, error)
 	Create(ctx context.Context, u *User) (*User, error)
 	Count(ctx context.Context) (int64, error)
+	UpdateProfile(ctx context.Context, userID uint64, nickname, avatarURL, signature string) error
+	AddCoinsAndHeart(ctx context.Context, userID uint64, coins, heart int32) error
+	DeductCoins(ctx context.Context, userID uint64, amount int32) error // 商店购买扣金币，余额不足返回错误
+	// 社交：搜索用户（username/nickname 模糊）、排行榜（按 heart_points 或 level 排序）
+	SearchByKeyword(ctx context.Context, keyword string, limit int) ([]*User, error)
+	ListByRank(ctx context.Context, rankType string, limit int) ([]*User, error)
 }
 
 // AuthUsecase 鉴权用例：注册、登录、按 ID 查用户（供 GetProfile 使用）。

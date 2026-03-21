@@ -1,0 +1,45 @@
+// 萌宠之家（cat-admin）签到模块 API 定义
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// 每日签到、连续天数、签到状态与 7 日日历。
+
+syntax = "proto3";
+
+package checkin.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/checkin/v1;v1";
+
+// DoCheckin 执行每日签到，返回今日是否已签、连续天数、奖励
+message DoCheckinRequest {}
+message DoCheckinReply {
+  bool already_checked_today = 1 [json_name = "already_checked_today"]; // 今日是否已签到
+  int32 continuous_days = 2 [json_name = "continuous_days"];           // 当前连续签到天数
+  int32 coins_reward = 3 [json_name = "coins_reward"];                 // 本次获得金币，未签则为 0
+  int32 heart_reward = 4 [json_name = "heart_reward"];                // 本次获得爱心积分，未签则为 0
+}
+
+// GetCheckinStatus 获取今日签到状态、连续天数、最近 7 天是否签到（用于日历展示）
+message GetCheckinStatusRequest {}
+message GetCheckinStatusReply {
+  bool checked_today = 1 [json_name = "checked_today"];
+  int32 continuous_days = 2 [json_name = "continuous_days"];
+  repeated bool last_7_days = 3 [json_name = "last_7_days"]; // 最近 7 天每日是否签到，索引 0 为最早一天
+}
+
+service CheckinService {
+  // POST /api/v1/checkin 每日签到
+  rpc DoCheckin(DoCheckinRequest) returns (DoCheckinReply) {
+    option (google.api.http) = {
+      post: "/api/v1/checkin";
+      body: "*";
+    };
+  }
+
+  // GET /api/v1/checkin/status 签到状态与 7 日日历
+  rpc GetCheckinStatus(GetCheckinStatusRequest) returns (GetCheckinStatusReply) {
+    option (google.api.http) = {
+      get: "/api/v1/checkin/status";
+    };
+  }
+}

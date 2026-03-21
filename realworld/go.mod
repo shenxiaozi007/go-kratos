@@ -8,6 +8,7 @@ require (
 	github.com/go-kratos/kratos/v2 v2.8.4
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/google/wire v0.6.0
+	github.com/wechaty/go-wechaty v0.4.15
 	go.uber.org/automaxprocs v1.5.1
 	golang.org/x/crypto v0.28.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157
@@ -28,9 +29,18 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.10.0 // indirect
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/kr/text v0.2.0 // indirect
+	github.com/lucsky/cuid v1.0.2 // indirect
+	github.com/maruel/rs v0.0.0-20150922171536-2c81c4312fe4 // indirect
+	github.com/otiai10/opengraph v1.1.1 // indirect
+	github.com/sirupsen/logrus v1.9.0 // indirect
+	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086 // indirect
+	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2 // indirect
+	github.com/wechaty/go-grpc v1.5.2 // indirect
 	go.opentelemetry.io/otel v1.24.0 // indirect
 	go.opentelemetry.io/otel/metric v1.24.0 // indirect
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect

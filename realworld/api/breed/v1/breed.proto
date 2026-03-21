@@ -1,0 +1,54 @@
+// 萌宠之家（cat-admin）品种模块 API 定义
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// 品种列表（按物种筛选）、品种详情，领养时可选 breed_id 调 POST /api/v1/pet
+
+syntax = "proto3";
+
+package breed.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/breed/v1;v1";
+
+// Breed 品种信息
+message Breed {
+  int64 id = 1 [json_name = "id"];
+  string species = 2 [json_name = "species"];   // CAT / DOG
+  string name_cn = 3 [json_name = "name_cn"];
+  string name_en = 4 [json_name = "name_en"];
+  string size_tag = 5 [json_name = "size_tag"];   // 体型，如「大型犬」
+  string life_span = 6 [json_name = "life_span"]; // 寿命，如「10-12年」
+  string image_url = 7 [json_name = "image_url"];
+}
+
+// ListBreeds 品种列表，query: species 可选
+message ListBreedsRequest {
+  string species = 1 [json_name = "species"]; // CAT / DOG，空则返回全部
+}
+message ListBreedsReply {
+  repeated Breed breeds = 1 [json_name = "breeds"];
+}
+
+// GetBreed 品种详情，path: id
+message GetBreedRequest {
+  int64 id = 1 [json_name = "id"];
+}
+message GetBreedReply {
+  Breed breed = 1 [json_name = "breed"];
+}
+
+service BreedService {
+  // GET /api/v1/breeds 品种列表，query: species 可选
+  rpc ListBreeds(ListBreedsRequest) returns (ListBreedsReply) {
+    option (google.api.http) = {
+      get: "/api/v1/breeds";
+    };
+  }
+
+  // GET /api/v1/breeds/{id} 品种详情
+  rpc GetBreed(GetBreedRequest) returns (GetBreedReply) {
+    option (google.api.http) = {
+      get: "/api/v1/breeds/{id}";
+    };
+  }
+}

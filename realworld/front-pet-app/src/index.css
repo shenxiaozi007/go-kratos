@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary: #ef3957;
+  --color-bg-light: #f8f6f6;
+  --color-bg-dark: #221013;
+}
+
+body {
+  @apply font-sans antialiased bg-bg-light text-gray-800;
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100dvh;
+  max-width: 448px;
+  @apply mx-auto shadow-xl;
+}
+
+/* 玻璃效果 */
+.glass {
+  @apply bg-white/70 backdrop-blur-glass;
+}
+
+.glass-dark {
+  @apply bg-bg-dark/80 backdrop-blur-glass text-white;
+}

@@ -67,7 +67,7 @@ func RegisterRealworldHTTPServer(s *http.Server, srv RealworldHTTPServer) {
 	r.POST("/api/users", _Realworld_Register1_HTTP_Handler(srv))
 	r.GET("/api/user", _Realworld_GetCurrentUser0_HTTP_Handler(srv))
 	r.PUT("/api/user", _Realworld_UpdateUser0_HTTP_Handler(srv))
-	r.GET("/api/profiles/{username}", _Realworld_GetProfile1_HTTP_Handler(srv))
+	r.GET("/api/profiles/{username}", _Realworld_GetProfile2_HTTP_Handler(srv))
 	r.POST("/api/profiles/{username}/follow", _Realworld_FollowUser0_HTTP_Handler(srv))
 	r.DELETE("/api/profiles/{username}/follow", _Realworld_UnfollowUser0_HTTP_Handler(srv))
 	r.GET("/api/articles", _Realworld_ListArticles0_HTTP_Handler(srv))
@@ -169,7 +169,7 @@ func _Realworld_UpdateUser0_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.
 	}
 }
 
-func _Realworld_GetProfile1_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.Context) error {
+func _Realworld_GetProfile2_HTTP_Handler(srv RealworldHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetProfileRequest
 		if err := ctx.BindQuery(&in); err != nil {

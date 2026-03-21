@@ -1,0 +1,51 @@
+// 萌宠之家（cat-admin）用户资料扩展 API
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// GET/PUT /api/v1/user/profile，需 JWT 鉴权。
+
+syntax = "proto3";
+
+package user.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/user/v1;v1";
+
+// GetProfile 获取当前用户资料（昵称、头像、个性签名、等级、金币、爱心积分）
+message GetProfileRequest {}
+message GetProfileReply {
+  int64 user_id = 1 [json_name = "user_id"];
+  string username = 2;
+  string nickname = 3;
+  string avatar_url = 4 [json_name = "avatar_url"];
+  string signature = 5;
+  int32 level = 6;
+  int32 coins = 7;
+  int32 heart_points = 8 [json_name = "heart_points"];
+}
+
+// UpdateProfile 更新昵称、头像、个性签名
+message UpdateProfileRequest {
+  string nickname = 1;
+  string avatar_url = 2 [json_name = "avatar_url"];
+  string signature = 3;
+}
+message UpdateProfileReply {
+  GetProfileReply profile = 1;
+}
+
+service UserService {
+  // GET /api/v1/user/profile
+  rpc GetProfile(GetProfileRequest) returns (GetProfileReply) {
+    option (google.api.http) = {
+      get: "/api/v1/user/profile";
+    };
+  }
+
+  // PUT /api/v1/user/profile
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileReply) {
+    option (google.api.http) = {
+      put: "/api/v1/user/profile";
+      body: "*";
+    };
+  }
+}

@@ -1,0 +1,56 @@
+// 萌宠之家（cat-admin）商店模块 API 定义
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// 商品列表、按分类筛选、购买（扣金币并写入背包）
+
+syntax = "proto3";
+
+package shop.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/shop/v1;v1";
+
+// ShopItem 商品信息，用于列表与购买结果
+message ShopItem {
+  int64 id = 1 [json_name = "id"];
+  string name = 2 [json_name = "name"];
+  string category = 3 [json_name = "category"];   // 食物 / 玩具 / 装扮 等
+  int32 price_coins = 4 [json_name = "price_coins"];
+  string image_url = 5 [json_name = "image_url"];
+  string description = 6 [json_name = "description"];
+}
+
+// ListItems 商品列表，可选按 category 筛选
+message ListItemsRequest {
+  string category = 1 [json_name = "category"]; // 可选，如 食物、玩具、装扮
+}
+message ListItemsReply {
+  repeated ShopItem items = 1 [json_name = "items"];
+}
+
+// Buy 购买：扣用户金币，将商品写入背包
+message BuyRequest {
+  int64 item_id = 1 [json_name = "item_id"];
+  int32 quantity = 2 [json_name = "quantity"];
+}
+message BuyReply {
+  bool success = 1 [json_name = "success"];
+  string message = 2 [json_name = "message"];
+}
+
+service ShopService {
+  // GET /api/v1/shop/items 商品列表，query: category 可选
+  rpc ListItems(ListItemsRequest) returns (ListItemsReply) {
+    option (google.api.http) = {
+      get: "/api/v1/shop/items";
+    };
+  }
+
+  // POST /api/v1/shop/buy 购买
+  rpc Buy(BuyRequest) returns (BuyReply) {
+    option (google.api.http) = {
+      post: "/api/v1/shop/buy";
+      body: "*";
+    };
+  }
+}

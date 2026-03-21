@@ -38,6 +38,24 @@ var ProviderSet = wire.NewSet(
 	// xsh 获客截流
 	NewXshCommentRepo,
 	NewXshInboxActionRepo,
+	// wechat 群发与登录
+	NewWechatGateway,
+	// 萌宠之家（cat-admin）宠物
+	NewPetRepo,
+	// 萌宠之家（cat-admin）签到
+	NewCheckinRepo,
+	// 萌宠之家（cat-admin）商店与背包
+	NewShopRepo,
+	NewInventoryRepo,
+	// 萌宠之家（cat-admin）品种
+	NewBreedRepo,
+	// 萌宠之家（cat-admin）宠物装扮
+	NewAppearanceRepo,
+	// 萌宠之家（cat-admin）成就
+	NewAchievementRepo,
+	// 萌宠之家（cat-admin）社交
+	NewFriendRepo,
+	NewFriendRequestRepo,
 )
 
 // Data .
@@ -87,10 +105,30 @@ func NewData(c *conf.Data, db *gorm.DB) (*Data, func(), error) {
 		// xsh 获客截流
 		&XshCommentPO{},
 		&XshInboxActionPO{},
+		// 萌宠之家（cat-admin）宠物表
+		&PetPO{},
+		// 萌宠之家（cat-admin）签到表
+		&CheckInPO{},
+		// 萌宠之家（cat-admin）商店与背包
+		&ShopItemPO{},
+		&UserInventoryPO{},
+		// 萌宠之家（cat-admin）品种表
+		&BreedPO{},
+		// 萌宠之家（cat-admin）宠物装扮表
+		&PetAppearancePO{},
+		// 萌宠之家（cat-admin）成就表
+		&AchievementPO{},
+		&UserAchievementPO{},
+		// 萌宠之家（cat-admin）社交表
+		&UserFriendPO{},
+		&FriendRequestPO{},
 	); err != nil {
 		return nil, nil, err
 	}
 	if err := SeedMapsIfEmpty(context.Background(), db); err != nil {
+		return nil, nil, err
+	}
+	if err := SeedCatAdminIfEmpty(context.Background(), db); err != nil {
 		return nil, nil, err
 	}
 

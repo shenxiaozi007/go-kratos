@@ -1,0 +1,142 @@
+// 萌宠之家（cat-admin）社交模块 API 定义
+// 项目文档：docs-all/cat-admin/02-后端开发文档.md
+// 好友列表、搜索用户、好友申请（发送/同意/拒绝）、排行榜
+
+syntax = "proto3";
+
+package friend.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "realworld/api/friend/v1;v1";
+
+// UserBrief 用户简要信息（搜索、好友列表、排行榜共用）
+message UserBrief {
+  uint64 id = 1 [json_name = "id"];
+  string username = 2 [json_name = "username"];
+  string nickname = 3 [json_name = "nickname"];
+  string avatar_url = 4 [json_name = "avatar_url"];
+  int32 level = 5 [json_name = "level"];
+  int32 heart_points = 6 [json_name = "heart_points"];
+}
+
+// ListFriends 我的好友列表
+message ListFriendsRequest {}
+message ListFriendsReply {
+  repeated UserBrief friends = 1 [json_name = "friends"];
+}
+
+// SearchUsers 搜索用户，query: keyword
+message SearchUsersRequest {
+  string keyword = 1 [json_name = "keyword"];
+}
+message SearchUsersReply {
+  repeated UserBrief users = 1 [json_name = "users"];
+}
+
+// SendFriendRequest 发送好友申请
+message SendFriendRequestRequest {
+  uint64 to_user_id = 1 [json_name = "to_user_id"];
+  string message = 2 [json_name = "message"];
+}
+message SendFriendRequestReply {
+  bool success = 1 [json_name = "success"];
+  string message = 2 [json_name = "message"];
+}
+
+// FriendRequestItem 收到的好友申请项
+message FriendRequestItem {
+  int64 id = 1 [json_name = "id"];
+  uint64 from_user_id = 2 [json_name = "from_user_id"];
+  UserBrief from_user = 3 [json_name = "from_user"];
+  string message = 4 [json_name = "message"];
+  string status = 5 [json_name = "status"];
+  int64 created_at = 6 [json_name = "created_at"];
+}
+
+// ListFriendRequests 收到的好友申请列表
+message ListFriendRequestsRequest {}
+message ListFriendRequestsReply {
+  repeated FriendRequestItem requests = 1 [json_name = "requests"];
+}
+
+// AcceptFriendRequest 同意申请，path: id 为申请 ID
+message AcceptFriendRequestRequest {
+  int64 id = 1 [json_name = "id"];
+}
+message AcceptFriendRequestReply {
+  bool success = 1 [json_name = "success"];
+  string message = 2 [json_name = "message"];
+}
+
+// RejectFriendRequest 拒绝申请
+message RejectFriendRequestRequest {
+  int64 id = 1 [json_name = "id"];
+}
+message RejectFriendRequestReply {
+  bool success = 1 [json_name = "success"];
+  string message = 2 [json_name = "message"];
+}
+
+// GetRanking 排行榜，query: type=heart_points|level, limit
+message GetRankingRequest {
+  string type = 1 [json_name = "type"];   // heart_points / level
+  int32 limit = 2 [json_name = "limit"];
+}
+message GetRankingReply {
+  repeated UserBrief ranking = 1 [json_name = "ranking"];
+}
+
+service FriendService {
+  // GET /api/v1/friends 我的好友列表
+  rpc ListFriends(ListFriendsRequest) returns (ListFriendsReply) {
+    option (google.api.http) = {
+      get: "/api/v1/friends";
+    };
+  }
+
+  // GET /api/v1/friends/search 搜索用户
+  rpc SearchUsers(SearchUsersRequest) returns (SearchUsersReply) {
+    option (google.api.http) = {
+      get: "/api/v1/friends/search";
+    };
+  }
+
+  // POST /api/v1/friends/request 发送好友申请
+  rpc SendFriendRequest(SendFriendRequestRequest) returns (SendFriendRequestReply) {
+    option (google.api.http) = {
+      post: "/api/v1/friends/request";
+      body: "*";
+    };
+  }
+
+  // GET /api/v1/friends/requests 收到的好友申请列表
+  rpc ListFriendRequests(ListFriendRequestsRequest) returns (ListFriendRequestsReply) {
+    option (google.api.http) = {
+      get: "/api/v1/friends/requests";
+    };
+  }
+
+  // POST /api/v1/friends/requests/{id}/accept 同意申请，path: id 为申请 ID
+  rpc AcceptFriendRequest(AcceptFriendRequestRequest) returns (AcceptFriendRequestReply) {
+    option (google.api.http) = {
+      post: "/api/v1/friends/requests/{id}/accept";
+      body: "*";
+    };
+  }
+
+  // POST /api/v1/friends/requests/{id}/reject 拒绝申请
+  rpc RejectFriendRequest(RejectFriendRequestRequest) returns (RejectFriendRequestReply) {
+    option (google.api.http) = {
+      post: "/api/v1/friends/requests/{id}/reject";
+      body: "*";
+    };
+  }
+
+  // GET /api/v1/ranking 排行榜
+  rpc GetRanking(GetRankingRequest) returns (GetRankingReply) {
+    option (google.api.http) = {
+      get: "/api/v1/ranking";
+    };
+  }
+}
